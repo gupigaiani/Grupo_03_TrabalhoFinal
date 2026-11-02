@@ -1,3 +1,7 @@
+> **DOCUMENTO HISTÓRICO DA NP1 — NÃO UTILIZAR COMO INSTRUÇÃO ATUAL.**
+> Esta análise de setembro de 2026 não representa a NP2. Caminhos `backend/`, inicialização por migrations, ausência de objetos SQL/testes, cadastro de perfis privilegiados, visibilidade geral de chamados e retorno de comentários descritos abaixo estão desatualizados. Consulte [o README principal](../README.md) para instalação, execução e limitações atuais.
+> Recomenda-se excluir este documento do pacote final e substituí-lo pela documentação oficial da NP2. Ele foi preservado apenas como histórico; suas afirmações não foram revalidadas nem reescritas nesta etapa.
+
 # Documentação técnica do backend — TechHelpSolutions
 
 > Documento elaborado a partir da leitura integral do código-fonte existente em `backend/`, incluindo configuração, models, DTOs, contexto do Entity Framework Core, migration, services e controllers. A análise retrata o estado do código em 22/09/2026. Não foram presumidos dados já existentes no banco nem comportamentos do frontend.

@@ -42,17 +42,18 @@ function disableEditing(message) {
 }
 
 function fillSelect(select, items, placeholder) {
-  if (!items.length) {
-    select.innerHTML = `<option value="">${placeholder}</option>`;
-    select.disabled = true;
-    return;
-  }
-
-  select.disabled = false;
-  select.innerHTML = `
-    <option value="">Selecione</option>
-    ${items.map((item) => `<option value="${item.id}">${item.nome}</option>`).join("")}
-  `;
+  select.replaceChildren();
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = items.length ? "Selecione" : placeholder;
+  select.append(first);
+  select.disabled = !items.length;
+  items.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = String(item.id);
+    option.textContent = item.nome;
+    select.append(option);
+  });
 }
 
 async function loadCatalogs() {

@@ -44,7 +44,17 @@ function showMessage(text, isError = false) {
 }
 
 function fillSelect(select, items, defaultLabel) {
-  select.innerHTML = `<option value="">${defaultLabel}</option>${items.map((item) => `<option value="${item.id}">${item.nome}</option>`).join("")}`;
+  select.replaceChildren();
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = defaultLabel;
+  select.append(placeholder);
+  items.forEach((item) => {
+    const option = document.createElement("option");
+    option.value = String(item.id);
+    option.textContent = item.nome;
+    select.append(option);
+  });
 }
 
 async function loadFilters() {
@@ -77,52 +87,50 @@ function renderTickets(chamados) {
 
   techMessage.classList.add("hidden");
   techTicketList.classList.remove("hidden");
-  techTicketList.innerHTML = chamados.map((chamado) => {
+  techTicketList.replaceChildren(...chamados.map((chamado) => {
     const canEdit = isOpenStatus(chamado.status?.nome);
-    const editTitle = canEdit
-      ? "Editar chamado"
-      : "Somente chamados com status Aberto podem ser editados";
-
-    return `
-      <article class="tech-ticket-item">
+    const article = document.createElement("article");
+    article.className = "tech-ticket-item";
+    // Template estatico; dados da API nunca sao inseridos como HTML.
+    article.innerHTML = `
         <div class="tech-ticket-item__content">
           <div class="tech-ticket-item__meta">
-            <span class="tech-ticket-item__number">#${chamado.id}</span>
-            <span class="${getPriorityClasses(chamado.prioridade?.nome)}">${chamado.prioridade?.nome || "-"}</span>
-            <span class="tech-ticket-item__category">${chamado.categoria?.nome || "-"}</span>
-            <span class="${getStatusClasses(chamado.status?.nome)}">${chamado.status?.nome || "Sem status"}</span>
+            <span class="tech-ticket-item__number"></span>
+            <span data-priority></span>
+            <span class="tech-ticket-item__category"></span>
+            <span data-status></span>
           </div>
 
-          <h3 class="tech-ticket-item__title">${chamado.titulo}</h3>
-          <p class="tech-ticket-item__description">${chamado.descricao}</p>
+          <h3 class="tech-ticket-item__title"></h3>
+          <p class="tech-ticket-item__description"></p>
 
           <div class="tech-ticket-item__details">
-            <span>Criado: ${app.formatDate(chamado.dataAbertura)}</span>
-            <span>Solicitante: ${chamado.usuario?.nome || "-"}</span>
-            <span>Tecnico: ${chamado.tecnico?.nome || "Não atribuido"}</span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         </div>
 
         <div class="tech-ticket-item__actions">
-          <a href="./comentarios.html?id=${chamado.id}" class="button button--soft">
+          <a data-comments class="button button--soft">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
             <span>Abrir Comentários</span>
           </a>
-          <button data-action="assumir" data-id="${chamado.id}" class="button button--primary" ${chamado.tecnicoId ? "disabled" : ""}>
+          <button data-action="assumir"  class="button button--primary" >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
               <path d="m9 11 3 3L22 4"></path>
             </svg>
-            <span>${chamado.tecnicoId ? "Assumido" : "Assumir"}</span>
+            <span></span>
           </button>
-          <button data-action="editar" data-id="${chamado.id}" title="${editTitle}" class="button ${canEdit ? "button--secondary" : "button--disabled"}" ${canEdit ? "" : "disabled"}>
+          <button data-action="editar"   class="button" >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
               <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
             </svg>
             <span>Editar</span>
           </button>
-          <button data-action="finalizar" data-id="${chamado.id}" class="button button--success" ${(!chamado.tecnicoId || (chamado.status?.nome || "").toLowerCase().includes("final") || (chamado.status?.nome || "").toLowerCase().includes("resolvido")) ? "disabled" : ""}>
+          <button data-action="finalizar"  class="button button--success" >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
               <path d="m9 11 3 3L22 4"></path>
@@ -130,9 +138,36 @@ function renderTickets(chamados) {
             <span>Finalizar</span>
           </button>
         </div>
-      </article>
     `;
-  }).join("");
+    article.querySelector(".tech-ticket-item__number").textContent = `#${chamado.id}`;
+    const priority = article.querySelector("[data-priority]");
+    priority.className = getPriorityClasses(chamado.prioridade?.nome);
+    priority.textContent = chamado.prioridade?.nome || "-";
+    article.querySelector(".tech-ticket-item__category").textContent = chamado.categoria?.nome || "-";
+    const status = article.querySelector("[data-status]");
+    status.className = getStatusClasses(chamado.status?.nome);
+    status.textContent = chamado.status?.nome || "Sem status";
+    article.querySelector(".tech-ticket-item__title").textContent = chamado.titulo;
+    article.querySelector(".tech-ticket-item__description").textContent = chamado.descricao;
+    const details = article.querySelector(".tech-ticket-item__details").children;
+    details[0].textContent = `Criado: ${app.formatDate(chamado.dataAbertura)}`;
+    details[1].textContent = `Solicitante: ${chamado.usuario?.nome || "-"}`;
+    details[2].textContent = `Tecnico: ${chamado.tecnico?.nome || "Não atribuido"}`;
+    article.querySelector("[data-comments]").href = `./comentarios.html?id=${encodeURIComponent(String(chamado.id))}`;
+    const assume = article.querySelector('[data-action="assumir"]');
+    assume.disabled = Boolean(chamado.tecnicoId);
+    assume.querySelector("span").textContent = chamado.tecnicoId ? "Assumido" : "Assumir";
+    const edit = article.querySelector('[data-action="editar"]');
+    edit.disabled = !canEdit;
+    edit.className = `button ${canEdit ? "button--secondary" : "button--disabled"}`;
+    edit.title = canEdit ? "Editar chamado" : "Somente chamados com status Aberto podem ser editados";
+    const statusName = (chamado.status?.nome || "").toLowerCase();
+    article.querySelector('[data-action="finalizar"]').disabled = !chamado.tecnicoId || statusName.includes("final") || statusName.includes("resolvido");
+    article.querySelectorAll("button[data-action]").forEach((button) => {
+      button.dataset.id = String(chamado.id);
+    });
+    return article;
+  }));
 }
 
 async function loadTickets() {
@@ -157,13 +192,13 @@ async function loadTickets() {
 
 async function handleAction(action, chamadoId) {
   if (action === "editar") {
-    window.location.href = `./abrir-chamado.html?id=${chamadoId}`;
+    window.location.href = `./abrir-chamado.html?id=${encodeURIComponent(chamadoId)}`;
     return;
   }
 
   const endpoint = action === "assumir"
-    ? `/api/chamados/${chamadoId}/assumir`
-    : `/api/chamados/${chamadoId}/finalizar`;
+    ? `/api/chamados/${encodeURIComponent(chamadoId)}/assumir`
+    : `/api/chamados/${encodeURIComponent(chamadoId)}/finalizar`;
 
   const response = await app.apiFetch(endpoint, { method: "PUT" });
   if (!response.ok) {

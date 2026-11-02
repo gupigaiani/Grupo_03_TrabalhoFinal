@@ -15,7 +15,7 @@ form.addEventListener("submit", async (event) => {
 
   const nome = document.getElementById("nome").value.trim();
   const email = document.getElementById("email").value.trim();
-  const tipo = document.getElementById("tipo").value;
+  const tipo = "Usuario"; // Cadastro publico; nao confia no valor de um controle manipulavel.
   const senha = document.getElementById("senha").value;
   const confirmarSenha = document.getElementById("confirmar-senha").value;
 

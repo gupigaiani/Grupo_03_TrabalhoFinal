@@ -32,9 +32,10 @@ public class UsuariosController : ControllerBase
         var emailNormalizado = dto.Email.Trim().ToLower();
         var tipoNormalizado = dto.Tipo.Trim();
 
-        var tiposPermitidos = new[] { "Usuario", "Tecnico", "Admin", "Gestor" };
-        if (!tiposPermitidos.Contains(tipoNormalizado, StringComparer.OrdinalIgnoreCase))
-            return BadRequest("Tipo de usuário inválido.");
+        // Este endpoint e de cadastro publico, inclusive se receber um JWT.
+        // Perfis privilegiados nao sao concedidos por esse fluxo.
+        if (!tipoNormalizado.Equals("Usuario", StringComparison.OrdinalIgnoreCase))
+            return BadRequest("O cadastro público permite apenas o perfil Usuario.");
 
         var emailJaExiste = await _context.Usuarios
             .AnyAsync(u => u.Email.ToLower() == emailNormalizado);
@@ -47,9 +48,7 @@ public class UsuariosController : ControllerBase
             Nome = dto.Nome.Trim(),
             Email = emailNormalizado,
             Senha = dto.Senha,
-            Tipo = tipoNormalizado.Equals("Gestor", StringComparison.OrdinalIgnoreCase)
-                ? "Admin"
-                : tipoNormalizado
+            Tipo = "Usuario"
         };
 
         _context.Usuarios.Add(usuario);
@@ -111,6 +110,10 @@ public class UsuariosController : ControllerBase
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario == null)
             return NotFound();
+
+        // Nao administradores podem editar dados pessoais, mas nao trocar de perfil.
+        if (!isAdmin && !string.Equals(dto.Tipo.Trim(), usuario.Tipo, StringComparison.OrdinalIgnoreCase))
+            return Forbid();
 
         usuario.Nome = dto.Nome;
         usuario.Email = dto.Email;

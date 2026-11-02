@@ -11,6 +11,38 @@
   gap: 1.5rem;
 }
 
+.manager-ticket-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.manager-ticket-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.manager-ticket-summary {
+  min-width: 0;
+  flex: 1 1 15rem;
+  overflow-wrap: anywhere;
+}
+
+.manager-ticket-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+
+.manager-ticket-meta {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 0.875rem;
+}
+
 .manager-metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 using TechHelpSolutions.Models;
+using TechHelpSolutions.Data.Queries;
 
 namespace TechHelpSolutions.Data
 {
@@ -12,12 +13,22 @@ namespace TechHelpSolutions.Data
         public DbSet<Prioridade> Prioridades { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
+        public DbSet<ChamadoDetalhado> ChamadosDetalhados => Set<ChamadoDetalhado>();
+        public DbSet<ComentarioDetalhado> ComentariosDetalhados => Set<ComentarioDetalhado>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // SQL Server nao permite OUTPUT direto em tabela com trigger habilitada.
+            modelBuilder.Entity<Chamado>().ToTable(tb => tb.UseSqlOutputClause(false));
+
+            modelBuilder.Entity<ChamadoDetalhado>().HasNoKey().ToView("vw_ChamadosDetalhados", "dbo");
+            modelBuilder.Entity<ComentarioDetalhado>().HasNoKey().ToView("vw_ComentariosDetalhados", "dbo");
+            modelBuilder.HasDbFunction(typeof(FuncoesSql).GetMethod(nameof(FuncoesSql.DuracaoMinutos))!)
+                .HasName("ufn_DuracaoMinutos").HasSchema("dbo");
+
             modelBuilder.Entity<Usuario>().HasData(
                 new { Id = 1, Nome = "João da Silva", Email = "usuario@gmail.com", Senha = "Senha123", Tipo = "Usuario", DataCriacao = new DateTime(2026, 10, 27, 9, 31, 35).AddTicks(2929494) },
                 new { Id = 2, Nome = "Gabriel Costa", Email = "tecnico@gmail.com", Senha = "Senha123", Tipo = "Tecnico", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 2).AddTicks(6711620) },

@@ -76,20 +76,28 @@ function renderComments(comentarios) {
 
   commentsMessage.classList.add("hidden");
   commentsList.classList.remove("hidden");
-  commentsList.innerHTML = comentarios.map((comentario) => {
+  commentsList.replaceChildren(...comentarios.map((comentario) => {
     const isMine = String(comentario.usuario?.id) === String(currentUser?.userId);
-    return `
-      <div class="comment-thread__item ${isMine ? "comment-thread__item--mine" : "comment-thread__item--other"}">
-        <div class="comment-thread__bubble ${isMine ? "comment-thread__bubble--mine" : "comment-thread__bubble--other"}">
-          <div class="comment-thread__meta ${isMine ? "comment-thread__meta--mine" : "comment-thread__meta--other"}">
-            <span class="comment-thread__author">${comentario.usuario?.nome || "Usuário"} • ${roleLabel(comentario.usuario?.tipo)}</span>
-            <span>${app.formatDate(comentario.dataEnvio)}</span>
-          </div>
-          <p class="comment-thread__text">${comentario.mensagem}</p>
+    const variant = isMine ? "mine" : "other";
+    const item = document.createElement("div");
+    item.className = `comment-thread__item comment-thread__item--${variant}`;
+    // Apenas estrutura estatica. Nome e mensagem permanecem texto literal.
+    item.innerHTML = `
+      <div class="comment-thread__bubble">
+        <div class="comment-thread__meta">
+          <span class="comment-thread__author"></span>
+          <span data-sent></span>
         </div>
+        <p class="comment-thread__text"></p>
       </div>
     `;
-  }).join("");
+    item.querySelector(".comment-thread__bubble").classList.add(`comment-thread__bubble--${variant}`);
+    item.querySelector(".comment-thread__meta").classList.add(`comment-thread__meta--${variant}`);
+    item.querySelector(".comment-thread__author").textContent = `${comentario.usuario?.nome || "Usuário"} • ${roleLabel(comentario.usuario?.tipo)}`;
+    item.querySelector("[data-sent]").textContent = app.formatDate(comentario.dataEnvio);
+    item.querySelector(".comment-thread__text").textContent = comentario.mensagem;
+    return item;
+  }));
 }
 
 async function loadComments() {

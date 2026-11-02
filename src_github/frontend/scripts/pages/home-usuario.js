@@ -77,51 +77,69 @@ function renderTickets(chamados) {
 
   ticketsMessage.classList.add("hidden");
   ticketsList.classList.remove("hidden");
-  ticketsList.innerHTML = chamados.map((chamado) => {
+  ticketsList.replaceChildren(...chamados.map((chamado) => {
     const canEdit = isOpenStatus(chamado.status?.nome);
-    const editClasses = canEdit
-      ? "button button--secondary user-ticket-button"
-      : "button button--disabled user-ticket-button";
-    const editTitle = canEdit
-      ? "Editar chamado"
-      : "Somente chamados com status Aberto podem ser editados";
-
-    return `
-      <article class="ticket-item">
-        <div class="ticket-item__layout">
-          <div>${getStatusIcon(chamado.status?.nome)}</div>
-          <div class="ticket-item__content">
-            <div class="ticket-item__headline">
-              <span class="ticket-item__number">#${chamado.id}</span>
-              <h3 class="ticket-item__title">${chamado.titulo}</h3>
+    const article = document.createElement("article");
+    article.className = "ticket-item";
+    // Somente estrutura estatica. Todo texto da API e atribuido abaixo por textContent.
+    article.innerHTML = `
+      <div class="ticket-item__layout">
+        <div data-status-icon></div>
+        <div class="ticket-item__content">
+          <div class="ticket-item__headline">
+            <span class="ticket-item__number"></span>
+            <h3 class="ticket-item__title"></h3>
+          </div>
+          <p class="ticket-item__description"></p>
+          <div class="ticket-item__footer">
+            <div class="ticket-item__meta">
+              <span class="badge badge--neutral" data-category></span>
+              <span data-priority></span>
+              <span data-opened></span>
             </div>
-            <p class="ticket-item__description">${chamado.descricao}</p>
-            <div class="ticket-item__footer">
-              <div class="ticket-item__meta">
-                <span class="badge badge--neutral">${chamado.categoria?.nome || "-"}</span>
-                <span class="${getPriorityClasses(chamado.prioridade?.nome)}">${chamado.prioridade?.nome || "-"}</span>
-                <span>Criado em: ${app.formatDate(chamado.dataAbertura)}</span>
-              </div>
-              <div class="ticket-item__actions">
-                <span class="${getStatusClasses(chamado.status?.nome)}">${chamado.status?.nome || "Sem status"}</span>
-                <a href="./comentarios.html?id=${chamado.id}" class="button button--soft user-ticket-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
-                  <span>Abrir Comentários</span>
-                </a>
-                <a href="./abrir-chamado.html?id=${chamado.id}" class="${editClasses}" ${canEdit ? "" : "aria-disabled=\"true\" tabindex=\"-1\""} title="${editTitle}">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
-                  </svg>
-                  <span>Editar Chamado</span>
-                </a>
-              </div>
+            <div class="ticket-item__actions">
+              <span data-status></span>
+              <a data-comments class="button button--soft user-ticket-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
+                <span>Abrir Comentários</span>
+              </a>
+              <a data-edit>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                </svg>
+                <span>Editar Chamado</span>
+              </a>
             </div>
           </div>
         </div>
-      </article>
+      </div>
     `;
-  }).join("");
+    // getStatusIcon escolhe entre tres SVGs literais, sem interpolacao de dados.
+    article.querySelector("[data-status-icon]").innerHTML = getStatusIcon(chamado.status?.nome);
+    article.querySelector(".ticket-item__number").textContent = `#${chamado.id}`;
+    article.querySelector(".ticket-item__title").textContent = chamado.titulo;
+    article.querySelector(".ticket-item__description").textContent = chamado.descricao;
+    article.querySelector("[data-category]").textContent = chamado.categoria?.nome || "-";
+    const priority = article.querySelector("[data-priority]");
+    priority.className = getPriorityClasses(chamado.prioridade?.nome);
+    priority.textContent = chamado.prioridade?.nome || "-";
+    article.querySelector("[data-opened]").textContent = `Criado em: ${app.formatDate(chamado.dataAbertura)}`;
+    const status = article.querySelector("[data-status]");
+    status.className = getStatusClasses(chamado.status?.nome);
+    status.textContent = chamado.status?.nome || "Sem status";
+    const encodedId = encodeURIComponent(String(chamado.id));
+    article.querySelector("[data-comments]").href = `./comentarios.html?id=${encodedId}`;
+    const edit = article.querySelector("[data-edit]");
+    edit.href = `./abrir-chamado.html?id=${encodedId}`;
+    edit.className = `button ${canEdit ? "button--secondary" : "button--disabled"} user-ticket-button`;
+    edit.title = canEdit ? "Editar chamado" : "Somente chamados com status Aberto podem ser editados";
+    if (!canEdit) {
+      edit.setAttribute("aria-disabled", "true");
+      edit.tabIndex = -1;
+    }
+    return article;
+  }));
 
   const countByStatus = chamados.reduce((acc, chamado) => {
     const normalized = (chamado.status?.nome || "").toLowerCase();

@@ -1,4 +1,7 @@
 const app = window.TechHelpApp;
+let canDeleteTickets = false;
+let managerTickets = [];
+let deletingTicket = false;
 const SLA_HOURS_LIMIT = 24;
 const STATUS_COLORS = [
   "rgb(37 99 235)",
@@ -177,18 +180,22 @@ function renderTicketsByDay(chamados) {
 
   const maxCount = Math.max(...days.map((day) => day.count), 1);
   const barsContainer = document.getElementById("tickets-by-day-bars");
-  barsContainer.innerHTML = days.map((day) => {
+  barsContainer.replaceChildren(...days.map((day) => {
     const height = day.count ? Math.max((day.count / maxCount) * 100, 10) : 6;
-    return `
-      <div class="manager-bar-card">
-        <span class="manager-bar-value">${day.count}</span>
+    const card = document.createElement("div");
+    card.className = "manager-bar-card";
+    card.innerHTML = `
+        <span class="manager-bar-value"></span>
         <div class="manager-bar-track">
-          <div class="manager-bar-fill" style="height: ${height}%"></div>
+          <div class="manager-bar-fill"></div>
         </div>
-        <span class="manager-bar-label">${formatShortDay(day.date)}</span>
-      </div>
+        <span class="manager-bar-label"></span>
     `;
-  }).join("");
+    card.querySelector(".manager-bar-value").textContent = day.count;
+    card.querySelector(".manager-bar-fill").style.height = `${height}%`;
+    card.querySelector(".manager-bar-label").textContent = formatShortDay(day.date);
+    return card;
+  }));
 
   const totalLast7Days = days.reduce((sum, day) => sum + day.count, 0);
   const busiestDay = [...days].sort((left, right) => right.count - left.count)[0];
@@ -220,25 +227,31 @@ function renderTicketsBySector(chamados) {
   const maxCount = Math.max(...sectors.map((sector) => sector.count), 1);
   const list = document.getElementById("tickets-by-sector-list");
 
-  list.innerHTML = sectors.map((sector, index) => {
+  list.replaceChildren(...sectors.map((sector, index) => {
     const percent = createPercent(sector.count, chamados.length);
     const width = Math.max((sector.count / maxCount) * 100, 8);
     const color = SECTOR_COLORS[index % SECTOR_COLORS.length];
 
-    return `
-      <div class="manager-row">
+    const row = document.createElement("div");
+    row.className = "manager-row";
+    row.innerHTML = `
         <div>
           <div class="manager-row-header">
-            <span class="manager-row-label">${sector.name}</span>
-            <span class="manager-row-meta">${sector.count} chamado${sector.count === 1 ? "" : "s"} - ${percent}%</span>
+            <span class="manager-row-label"></span>
+            <span class="manager-row-meta"></span>
           </div>
           <div class="manager-row-track">
-            <div class="manager-row-fill" style="width: ${width}%; background-color: ${color};"></div>
+            <div class="manager-row-fill"></div>
           </div>
         </div>
-      </div>
     `;
-  }).join("");
+    row.querySelector(".manager-row-label").textContent = sector.name;
+    row.querySelector(".manager-row-meta").textContent = `${sector.count} chamado${sector.count === 1 ? "" : "s"} - ${percent}%`;
+    const fill = row.querySelector(".manager-row-fill");
+    fill.style.width = `${width}%`;
+    fill.style.backgroundColor = color;
+    return row;
+  }));
 
   showContentState("tickets-by-sector-empty", "tickets-by-sector-list");
 }
@@ -272,26 +285,31 @@ function renderStatusDistribution(chamados) {
   chart.style.background = `conic-gradient(${gradientParts.join(", ")})`;
   chart.innerHTML = `
     <div class="manager-donut-center">
-      <span class="manager-donut-total">${chamados.length}</span>
+      <span class="manager-donut-total"></span>
       <span class="manager-donut-subtitle">chamados</span>
     </div>
   `;
+  chart.querySelector(".manager-donut-total").textContent = chamados.length;
 
   const legend = document.getElementById("status-distribution-legend");
-  legend.innerHTML = statuses.map((status, index) => {
+  legend.replaceChildren(...statuses.map((status, index) => {
     const color = STATUS_COLORS[index % STATUS_COLORS.length];
     const percent = createPercent(status.count, chamados.length);
 
-    return `
-      <div class="manager-legend-item">
+    const item = document.createElement("div");
+    item.className = "manager-legend-item";
+    item.innerHTML = `
         <div class="manager-legend-label">
-          <span class="manager-legend-swatch" style="background-color: ${color};"></span>
-          <span class="manager-legend-name">${status.name}</span>
+          <span class="manager-legend-swatch"></span>
+          <span class="manager-legend-name"></span>
         </div>
-        <span class="manager-legend-value">${status.count} - ${percent}%</span>
-      </div>
+        <span class="manager-legend-value"></span>
     `;
-  }).join("");
+    item.querySelector(".manager-legend-swatch").style.backgroundColor = color;
+    item.querySelector(".manager-legend-name").textContent = status.name;
+    item.querySelector(".manager-legend-value").textContent = `${status.count} - ${percent}%`;
+    return item;
+  }));
 
   showContentState("status-distribution-empty", "status-distribution-content");
 }
@@ -303,6 +321,89 @@ function renderDashboard(chamados) {
   renderStatusDistribution(chamados);
 }
 
+function showDeleteMessage(message, isError = false) {
+  const element = document.getElementById("admin-tickets-message");
+  element.textContent = message;
+  element.className = `form-message ${isError ? "form-message--error" : "form-message--success"}`;
+}
+
+function renderDeletableTickets() {
+  const panel = document.getElementById("admin-tickets-panel");
+  const list = document.getElementById("admin-tickets-list");
+  list.replaceChildren();
+  if (!canDeleteTickets) {
+    panel.classList.add("hidden");
+    return;
+  }
+
+  panel.classList.remove("hidden");
+  document.getElementById("admin-tickets-empty").classList[managerTickets.length ? "add" : "remove"]("hidden");
+  managerTickets.forEach((chamado) => {
+    const row = document.createElement("article");
+    row.className = "manager-ticket-row";
+    const summary = document.createElement("div");
+    summary.className = "manager-ticket-summary";
+    const title = document.createElement("h3");
+    title.className = "manager-ticket-title";
+    title.textContent = `#${chamado.id} — ${chamado.titulo || "Sem título"}`;
+    const meta = document.createElement("p");
+    meta.className = "manager-ticket-meta";
+    meta.textContent = `${chamado.status?.nome || "Sem status"} • ${app.formatDate(chamado.dataAbertura)}`;
+    summary.append(title, meta);
+    const button = document.createElement("button");
+    button.setAttribute("type", "button");
+    button.className = "button button--danger-text";
+    button.setAttribute("data-delete-ticket", String(chamado.id));
+    button.setAttribute("aria-label", `Excluir chamado #${chamado.id}: ${chamado.titulo || "Sem título"}`);
+    button.textContent = "Excluir";
+    button.disabled = deletingTicket;
+    button.addEventListener("click", () => deleteTicket(chamado));
+    row.append(summary, button);
+    list.append(row);
+  });
+}
+
+function deleteErrorMessage(status) {
+  if (status === 401) return "Sessão expirada. Faça login novamente.";
+  if (status === 403) return "Você não tem permissão para excluir chamados.";
+  if (status === 404) return "Chamado não encontrado. Recarregue a página para atualizar a lista.";
+  return "Não foi possível excluir o chamado. Tente novamente mais tarde.";
+}
+
+async function deleteTicket(chamado) {
+  if (!canDeleteTickets || deletingTicket) return;
+  if (!window.confirm(`Excluir o chamado #${chamado.id}: "${chamado.titulo || "Sem título"}"? Esta ação não pode ser desfeita.`)) return;
+
+  deletingTicket = true;
+  renderDeletableTickets();
+  try {
+    const response = await app.apiFetch(`/api/chamados/${encodeURIComponent(String(chamado.id))}`, { method: "DELETE" });
+    if (!response.ok) {
+      showDeleteMessage(deleteErrorMessage(response.status), true);
+      return;
+    }
+
+    // Atualiza localmente mesmo se a consulta de sincronizacao posterior falhar.
+    managerTickets = managerTickets.filter((ticket) => ticket.id !== chamado.id);
+    renderDashboard(managerTickets);
+    renderDeletableTickets();
+    try {
+      await loadManagerDashboard();
+      showDeleteMessage(`Chamado #${chamado.id} excluído com sucesso.`);
+    } catch {
+      showDeleteMessage(`Chamado #${chamado.id} excluído. Não foi possível sincronizar os indicadores com o servidor. Recarregue a página.`, true);
+    }
+  } catch {
+    // apiFetch ja limpa a sessao e redireciona em 401. Nunca exibe o corpo SQL/HTTP.
+    showDeleteMessage(app.getStoredUser()
+      ? "Não foi possível confirmar a exclusão. Verifique sua conexão e recarregue a página antes de tentar novamente."
+      : deleteErrorMessage(401), true);
+  } finally {
+    deletingTicket = false;
+    renderDeletableTickets();
+  }
+}
+
 async function loadManagerDashboard() {
   const response = await app.apiFetch("/api/chamados");
   const data = await app.readResponse(response);
@@ -312,7 +413,9 @@ async function loadManagerDashboard() {
   }
 
   const chamados = Array.isArray(data) ? data : [];
+  managerTickets = chamados;
   renderDashboard(chamados);
+  renderDeletableTickets();
   setText("manager-message", `Indicadores carregados com ${chamados.length} chamados.`);
 }
 
@@ -322,6 +425,8 @@ async function loadManagerDashboard() {
     return;
   }
 
+  // requireAuth normaliza Gestor para navegacao; DELETE exige o perfil original Admin.
+  canDeleteTickets = app.getStoredUser()?.role === "Admin";
   app.attachLogout();
 
   try {

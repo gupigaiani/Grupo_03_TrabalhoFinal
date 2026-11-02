@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -6,9 +6,11 @@ using TechHelpSolutions.Data;
 using TechHelpSolutions.DTOs;
 using TechHelpSolutions.Models;
 using TechHelpSolutions.Services;
+using TechHelpSolutions.Filters;
 
 [ApiController]
 [Route("api/chamados")]
+[TypeFilter(typeof(ChamadoDatasExceptionFilter))]
 public class ChamadosController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -34,11 +36,21 @@ public class ChamadosController : ControllerBase
         return Ok(chamado);
     }
 
-    [Authorize]
+    [Authorize(Roles = "Usuario,Tecnico,Gestor,Admin")]
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? status, [FromQuery] int? prioridade, [FromQuery] int? categoria)
     {
-        var query = CriarQueryBaseChamados();
+        var query = _service.ConsultarChamadosDetalhados();
+
+        // A restricao integra o SQL da view, antes de filtros e materializacao.
+        if (User.IsInRole("Usuario"))
+        {
+            var userId = ObterUsuarioIdLogado();
+            if (userId == null)
+                return Unauthorized();
+
+            query = query.Where(c => c.UsuarioId == userId.Value);
+        }
 
         if (status.HasValue)
             query = query.Where(c => c.StatusId == status.Value);
@@ -53,7 +65,7 @@ public class ChamadosController : ControllerBase
             .OrderByDescending(c => c.DataAbertura)
             .ToListAsync();
 
-        return Ok(chamados.Select(c => ProjetarChamado(c, incluirComentarios: false)));
+        return Ok(chamados);
     }
 
     [Authorize(Roles = "Usuario")]
@@ -64,12 +76,12 @@ public class ChamadosController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        var chamados = await CriarQueryBaseChamados()
+        var chamados = await _service.ConsultarChamadosDetalhados()
             .Where(c => c.UsuarioId == userId.Value)
             .OrderByDescending(c => c.DataAbertura)
             .ToListAsync();
 
-        return Ok(chamados.Select(c => ProjetarChamado(c, incluirComentarios: false)));
+        return Ok(chamados);
     }
 
     [Authorize(Roles = "Tecnico")]
@@ -80,12 +92,12 @@ public class ChamadosController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        var chamados = await CriarQueryBaseChamados()
+        var chamados = await _service.ConsultarChamadosDetalhados()
             .Where(c => c.TecnicoId == userId.Value)
             .OrderByDescending(c => c.DataAbertura)
             .ToListAsync();
 
-        return Ok(chamados.Select(c => ProjetarChamado(c, incluirComentarios: false)));
+        return Ok(chamados);
     }
 
     [Authorize]
@@ -112,7 +124,9 @@ public class ChamadosController : ControllerBase
     [HttpPut("{id}/status")]
     public async Task<IActionResult> AtualizarStatus(int id, AtualizarStatusDTO dto)
     {
-        await _service.AtualizarStatus(id, dto.StatusId);
+        if (!await _service.AtualizarStatus(id, dto.StatusId))
+            return NotFound();
+
         return NoContent();
     }
 
@@ -120,7 +134,7 @@ public class ChamadosController : ControllerBase
     [HttpPut("{id}/assumir")]
     public async Task<IActionResult> AssumirChamado(int id)
     {
-        var chamado = await _context.Chamados.FindAsync(id);
+        var chamado = await _context.Chamados.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
         if (chamado == null)
             return NotFound();
@@ -129,19 +143,15 @@ public class ChamadosController : ControllerBase
         if (userId == null)
             return Unauthorized();
 
-        chamado.TecnicoId = userId.Value;
-        chamado.StatusId = 2; // Em andamento
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        var resultado = await _service.AssumirChamado(chamado, userId.Value);
+        return ResponderOperacaoChamado(resultado);
     }
 
     [Authorize(Roles = "Tecnico")]
     [HttpPut("{id}/finalizar")]
     public async Task<IActionResult> FinalizarChamado(int id)
     {
-        var chamado = await _context.Chamados.FindAsync(id);
+        var chamado = await _context.Chamados.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
 
         if (chamado == null)
             return NotFound();
@@ -156,13 +166,8 @@ public class ChamadosController : ControllerBase
         if (chamado.TecnicoId != userId.Value)
             return Forbid();
 
-        chamado.TecnicoId = userId.Value;
-        chamado.StatusId = 3; // Finalizado
-        chamado.DataFechamento = DateTime.Now;
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        var resultado = await _service.FinalizarChamado(chamado, userId.Value);
+        return ResponderOperacaoChamado(resultado);
     }
 
     [Authorize(Roles = "Usuario,Tecnico")]
@@ -246,25 +251,9 @@ public class ChamadosController : ControllerBase
         if (User.IsInRole("Usuario") && chamado.UsuarioId != userId.Value)
             return Forbid();
 
-        var comentarios = await _context.Comentarios
-            .AsNoTracking()
-            .Include(c => c.Usuario)
+        var comentarios = await _service.ConsultarComentariosDetalhados()
             .Where(c => c.ChamadoId == id)
             .OrderBy(c => c.DataEnvio)
-            .Select(c => new ComentarioResponseDTO
-            {
-                Id = c.Id,
-                ChamadoId = c.ChamadoId,
-                Mensagem = c.Mensagem,
-                DataEnvio = c.DataEnvio,
-                Usuario = new UsuarioResumoDTO
-                {
-                    Id = c.Usuario.Id,
-                    Nome = c.Usuario.Nome,
-                    Email = c.Usuario.Email,
-                    Tipo = c.Usuario.Tipo
-                }
-            })
             .ToListAsync();
 
         return Ok(comentarios);
@@ -288,6 +277,21 @@ public class ChamadosController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private IActionResult ResponderOperacaoChamado(ResultadoOperacaoChamado resultado)
+    {
+        return resultado switch
+        {
+            ResultadoOperacaoChamado.Sucesso => NoContent(),
+            ResultadoOperacaoChamado.NaoEncontrado => NotFound(),
+            ResultadoOperacaoChamado.TecnicoInvalido => Forbid(),
+            ResultadoOperacaoChamado.SemResponsavel => BadRequest("O chamado precisa ser assumido antes de ser finalizado."),
+            ResultadoOperacaoChamado.OutroResponsavel => Forbid(),
+            ResultadoOperacaoChamado.Conflito => Conflict("O chamado foi alterado por outra operacao. Recarregue e tente novamente."),
+            ResultadoOperacaoChamado.ParametroInvalido => BadRequest("Data de fechamento obrigatoria."),
+            _ => throw new InvalidOperationException("Resultado de operacao de chamado desconhecido.")
+        };
     }
 
     private IQueryable<Chamado> CriarQueryBaseChamados(bool incluirComentarios = false)
