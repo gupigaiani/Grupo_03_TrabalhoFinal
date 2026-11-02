@@ -1,0 +1,79 @@
+﻿OK senhas 1: salt distinto, senha correta/incorreta e metadados
+OK senhas 2: legado, custos abusivos e formatos malformados rejeitados
+OK senhas 3: tres usuarios migrados autenticam com perfis originais
+OK senhas 4: cadastros HTTP armazenam hashes distintos e nao retornam senha
+OK senhas 5: login HTTP correto e rejeicao de senha incorreta
+OK senhas 6: atualizacao pessoal sem senha preserva hash byte a byte
+OK senhas 7: alteracao de senha preserva login e revoga senha antiga
+OK senhas 8: login HTTP rejeita hash malformado e senha legada sem fallback
+OK senhas 9: respostas publicas sem hash e autorizacao preservada
+OK senhas 10: baseline pos-migracao preservado; fixtures removidas
+Concluido: 10 grupos de senhas aprovados.
+OK 1: duas procedures presentes
+OK 2: atribuicao valida
+OK 3: reatribuicao preservada
+OK 4: tecnico inexistente, inelegivel e chamado ausente rejeitados
+OK 5: finalizacao por outro tecnico rejeitada
+OK 6: finalizacao valida e fechamento preservado ao reassumir
+OK 7: finalizacao sem responsavel rejeitada
+OK 8: rollback integral em erro e nenhuma transacao pendente
+OK 9: duas atribuicoes concorrentes: uma vence e outra recebe 51105
+OK 10: duas finalizacoes concorrentes: segunda recebe 51105
+OK 11: finalizacao concorrente com reatribuicao: estado vencedor preservado
+OK 12: servico parametrizado, mapeamento de conflito e tracker atualizados
+OK 13: HTTP 401, 403 por perfil e 404 preservados nos dois endpoints
+OK 14: HTTP 400/403/204, finalizacao repetida e reatribuicao preservados
+OK 15: HTTP rejeita tecnico que perdeu elegibilidade mesmo com JWT anterior
+OK 16: HTTP assumir: concorrencia real retorna 409 sem sobrescrita
+OK 17: HTTP finalizar: mudanca concorrente de responsavel retorna 409
+OK 18: todos os dados originais identicos antes/depois; temporarios removidos
+Concluido: 18 verificacoes aprovadas.
+OK consultas 1: existencia, determinismo e ausencia de senhas/tokens nas views
+OK consultas 2: view de chamados equivalente a consulta original, com LEFT JOIN e um comando SQL
+OK consultas 3: comentarios equivalentes, incluindo comentario posterior ao fechamento, sem tracking
+OK consultas 4: 11 casos de duracao: fracao, NULL, negativa, submilissegundo, fronteira de minuto e intervalo longo
+OK consultas 5: mapeamento EF da function, coluna da view e media equivalentes ao painel
+OK consultas 6: 45 listagens HTTP equivalentes: tres perfis, filtros simples/combinados e resultado vazio
+OK consultas 7: HTTP meus, meus-atendimentos, comentarios e detalhamento preservam todos os DTOs
+OK consultas 8: autenticacao, perfis e 404 preservados nas consultas HTTP
+OK consultas 9: todas as tabelas identicas antes/depois; testes sem escrita
+Concluido: 9 grupos de consultas aprovados.
+OK trigger 1: trigger habilitada AFTER INSERT/UPDATE e base inicialmente integra
+OK trigger 2: INSERT valido e INSERT com fechamento NULL
+OK trigger 3: INSERT invalido por 100 ns rejeitado sem persistencia
+OK trigger 4: UPDATE valido, inclusive fechamento igual a abertura
+OK trigger 5: UPDATE invalido rejeitado e todas as colunas restauradas
+OK trigger 6: UPDATE com fechamento NULL em multiplas linhas
+OK trigger 7: INSERT/UPDATE em lote com um invalido rejeitam o lote inteiro
+OK trigger 8: rollback da transacao externa, incluindo escrita anterior ao erro
+OK trigger 9: SaveChanges com multiplas entidades sofre rollback sem erro de OUTPUT
+OK trigger 10: trigger na procedure invalida desfaz status e fechamento juntos
+OK trigger 11: HTTP cria chamado pelo EF e recupera IDENTITY com trigger habilitada
+OK trigger 12: HTTP edita, assume e finaliza com EF/procedures e trigger ativos
+OK trigger 13: HTTP 400 seguro tanto para SqlException da procedure quanto DbUpdateException do EF
+OK trigger 14: HTTP exclui chamado temporario com trigger habilitada
+OK trigger 15: dados originais identicos e todos os registros temporarios removidos
+Concluido: 15 grupos de trigger aprovados.
+OK correcoes 1: POST de comentario do solicitante: DTO completo e JSON sem credenciais em qualquer nivel
+OK correcoes 2: POST do tecnico preserva autor e campos publicos sem serializar entidades EF
+OK correcoes 3: GET preserva identificacao, mensagem, data e resumo publico do POST
+OK correcoes 4: comentario sem login retorna 401 e em chamado alheio retorna 403
+OK correcoes 5: PUT status de chamado inexistente retorna HTTP 404, sem excecao interna
+OK correcoes 6: PUT existente continua 204, grava fechamento no status 3 e preserva demais regras
+OK correcoes 7: status exige Tecnico: 401/403 preservados e autorizacao precede verificacao de existencia
+OK correcoes 8: GETs de usuarios, chamados e comentarios exercitados nao expoem credenciais
+OK correcoes 9: POST de chamado inspecionado sem exposicao comprovada de credenciais neste fluxo
+OK correcoes 10: registros originais identicos; chamados e comentarios temporarios removidos
+Concluido: 10 grupos de correcoes aprovados.
+OK acesso 1: cadastro publico Usuario, normalizacao de caixa/espacos e login sem privilegios extras
+OK acesso 2: Tecnico/Gestor/Admin e manipulacoes do JSON rejeitados com 400, sem persistencia
+OK acesso 3: autoalteracao para perfil privilegiado retorna 403 e nao grava outros campos
+OK acesso 4: atualizacao pessoal e login preservados; edicao administrativa existente continua autorizada
+OK acesso 5: listagem geral restringe tres solicitantes diferentes aos respectivos chamados
+OK acesso 6: filtros e manipulacao de query string nao burlam propriedade; detalhe proprio e /meus preservados
+OK acesso 7: Tecnico, Gestor literal e Admin mantem consultas gerais; painel usa a mesma rota
+OK acesso 8: 90 listagens HTTP validam filtros simples/combinados e ordenacao por abertura
+OK acesso 9: sem autenticacao a listagem retorna 401, com ou sem filtros
+OK acesso 10: tecnico continua assumindo/finalizando e o solicitante acompanha seu chamado
+OK acesso 11: dados originais identicos e temporarios removidos
+Concluido: 11 grupos de controle de acesso aprovados.

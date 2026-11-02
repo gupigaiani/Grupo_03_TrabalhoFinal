@@ -1,0 +1,11 @@
+﻿OK senhas 1: salt distinto, senha correta/incorreta e metadados
+OK senhas 2: legado, custos abusivos e formatos malformados rejeitados
+OK senhas 3: tres usuarios migrados autenticam com perfis originais
+OK senhas 4: cadastros HTTP armazenam hashes distintos e nao retornam senha
+OK senhas 5: login HTTP correto e rejeicao de senha incorreta
+OK senhas 6: atualizacao pessoal sem senha preserva hash byte a byte
+OK senhas 7: alteracao de senha preserva login e revoga senha antiga
+OK senhas 8: login HTTP rejeita hash malformado e senha legada sem fallback
+OK senhas 9: respostas publicas sem hash e autorizacao preservada
+OK senhas 10: baseline pos-migracao preservado; fixtures removidas
+Concluido: 10 grupos de senhas aprovados.

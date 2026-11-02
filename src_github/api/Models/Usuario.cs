@@ -1,10 +1,11 @@
-﻿namespace TechHelpSolutions.Models
+namespace TechHelpSolutions.Models
 {
     public class Usuario
     {
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         public string Senha { get; set; }
         public string Tipo { get; set; } 
         public DateTime DataCriacao { get; set; } = DateTime.Now;

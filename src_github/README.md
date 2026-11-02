@@ -68,7 +68,9 @@ Se a política local bloquear scripts, revise o arquivo e use uma sessão cuja p
 
 Na primeira execução, o setup verifica dependências, conexão Windows, versão, permissões e diretórios padrão. Adapta somente o provisionamento em um arquivo temporário, preservando `database/script.sql`; cria o banco e carrega estrutura e dados originais. Não usa migrations nem `schema.sql` para substituir essa carga.
 
-Em banco existente, valida a estrutura e os registros mínimos sem repetir a carga. Instala/atualiza Function, Views, Procedures e Trigger e cria índices ausentes, verificando os objetos antes do commit. A ordem é validação original, `02_functions.sql`, `03_views.sql`, `04_procedures.sql`, `05_triggers.sql` e `06_indexes.sql`. `07_validacao.sql` contém as verificações da base original.
+Em banco existente, valida a estrutura e os registros mínimos sem repetir a carga. Verifica o formato das senhas pela ferramenta .NET em `tools/PasswordMaintenance/`; se houver senhas legadas, exige backup COPY_ONLY com checksum e verificação antes da conversão transacional. Execute essa manutenção com a API parada. Senhas já convertidas não são regravadas. O SDK .NET e as permissões de backup no SQL Server são necessários para essa etapa.
+
+Instala/atualiza Function, Views, Procedures e Trigger e cria índices ausentes, verificando os objetos antes do commit. A ordem é validação original, proteção de senhas, `02_functions.sql`, `03_views.sql`, `04_procedures.sql`, `05_triggers.sql` e `06_indexes.sql`. `07_validacao.sql` contém as verificações da base original. Os seeds de senha do export e do modelo EF foram atualizados para hashes; estrutura, identidades e demais dados permanecem preservados.
 
 Erros interrompem a execução. Uma instalação parcial é preservada para diagnóstico: o script não apaga nem recria automaticamente o banco. Não faça carga manual sobre uma base parcial sem investigar a falha.
 
@@ -229,7 +231,7 @@ Os exemplos foram conferidos estaticamente contra controllers/DTOs e pelo parser
 
 ## Testes automatizados
 
-Use somente a base acadêmica local, sem outros usuários gravando durante os testes. O executável backend não utiliza descoberta por `dotnet test`. Com a API iniciada na porta 5266, execute os cinco modos:
+Use somente a base acadêmica local, sem outros usuários gravando durante os testes. O executável backend não utiliza descoberta por `dotnet test`. Com a API iniciada na porta 5266, execute os seis modos:
 
 ```powershell
 dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.csproj -- http://localhost:5266
@@ -237,20 +239,21 @@ dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.c
 dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.csproj -- http://localhost:5266 --trigger
 dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.csproj -- http://localhost:5266 --correcoes
 dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.csproj -- http://localhost:5266 --acesso
+dotnet run --project tests/Chamados.IntegrationTests/Chamados.IntegrationTests.csproj -- http://localhost:5266 --senhas
 ```
 
 Eles cobrem procedures/concorrência, Views/Function, Trigger e regressões de segurança. Verificam a preservação dos registros originais; os modos de escrita criam e removem somente suas fixtures temporárias. Testes via API podem consumir valores IDENTITY, sem reseed. A conta Windows precisa das permissões de leitura/escrita/execução e, para observar bloqueios, `VIEW SERVER PERFORMANCE STATE` no SQL Server 2025 ou equivalente. `THS_TEST_CONNECTION` permite outra conexão, que deve apontar para a mesma base utilizada pela API.
 
 As evidências de índices estão em `tests/evidencias/indices/`: inventários, SQL, planos reais, leituras e comparação. Não repita a captura `--indices` sobre essas pastas: o executável protege as evidências contra sobrescrita. Com três chamados e dois comentários não há base para afirmar ganho expressivo; índices eliminaram ordenações em consultas específicas, mas as leituras observadas não diminuíram.
 
-Testes frontend sem API (22 aprovados e um teste real opcional ignorado):
+Testes frontend sem API (37 aprovados e dois testes reais opcionais ignorados):
 
 ```powershell
 node --test --test-isolation=none tests/frontend/renderizacao.test.cjs
 Get-ChildItem frontend/scripts -Recurse -Filter '*.js' | ForEach-Object { node --check $_.FullName; if ($LASTEXITCODE -ne 0) { throw "Erro de sintaxe: $($_.FullName)" } }
 ```
 
-Para incluir consultas reais e obter os 23 testes, mantenha a API ligada:
+Para incluir consultas reais (38 testes aprovados e um ignorado), mantenha a API ligada:
 
 ```powershell
 $env:THS_API_READONLY_URL = 'http://localhost:5266'
@@ -258,7 +261,7 @@ node --test --test-isolation=none tests/frontend/renderizacao.test.cjs
 Remove-Item Env:THS_API_READONLY_URL
 ```
 
-Os testes frontend usam DOM simulado e não substituem validação visual em navegador. O modo real autentica e consulta a API sem gravar dados. O histórico validado inclui 63 grupos backend e 23 testes frontend; consulte o resultado da execução atual, sem tratar esses números como garantia em outro ambiente.
+Os testes frontend usam DOM simulado e não substituem validação visual em navegador. O modo de leitura real autentica e consulta a API sem gravar dados. Para habilitar também o 39º teste, que cria e exclui somente seu próprio chamado temporário, defina `THS_API_TEMP_DELETE_URL` para a mesma URL antes de executar o comando Node; remova essa variável da sessão ao terminar. Os 63 grupos backend anteriores e os dez grupos adicionais de senhas foram validados. Consulte o resultado da execução atual, sem tratar esses números como garantia em outro ambiente.
 
 ## Objetos SQL implementados
 
@@ -270,7 +273,11 @@ Os testes frontend usam DOM simulado e não substituem validação visual em nav
 
 ## Limitações e segurança
 
-Este é um ambiente acadêmico de desenvolvimento, não uma configuração pronta para produção. Persistem senhas sem hash, chave JWT fixa no código, CORS aberto, HTTP local e aceitação do certificado SQL por `TrustServerCertificate=True`. O frontend guarda o token no armazenamento local. Não exponha a aplicação nem as contas de demonstração à internet. O export e as fixtures contêm credenciais de teste e exigem revisão antes de qualquer publicação.
+Senhas são armazenadas em PBKDF2-HMAC-SHA256, com 600.000 iterações, salt aleatório de 16 bytes e derivação de 32 bytes. O formato versionado registra algoritmo, custo, salt e derivação; o login compara em tempo constante e rejeita texto puro e formatos inválidos. O serviço identifica hashes que precisam de atualização futura; não há fallback de login legado. Credenciais de demonstração permanecem as mesmas, sem serem publicadas aqui.
+
+Este é um ambiente acadêmico de desenvolvimento, não uma configuração pronta para produção. Persistem chave JWT fixa no código, CORS aberto, HTTP local e aceitação do certificado SQL por `TrustServerCertificate=True`. O frontend guarda o token no armazenamento local. Não exponha a aplicação nem as contas de demonstração à internet. As fixtures contêm credenciais de teste e exigem revisão antes de qualquer publicação. Backups anteriores à conversão contêm senhas legadas: mantenha-os sob acesso restrito fora do pacote de entrega e descarte-os conforme a política de retenção após validar a recuperação.
+
+As evidências agregadas da conversão e o novo baseline ficam em `tests/evidencias/senhas/`. Os registros históricos em `tests/evidencias/indices/` são anteriores à migração; não substitua seus hashes nem refaça medições removendo índices. Consulte `tools/PasswordMaintenance/README.md` para manutenção e recuperação.
 
 A proteção contra XSS usa APIs seguras do DOM; cadastro privilegiado e autoelevação são bloqueados no servidor, assim como a listagem de chamados de terceiros para `Usuario`. Essas correções não eliminam as limitações anteriores de autenticação e implantação. Os testes exigem SQL Server real e permissões específicas; não há provisionamento automático de dependências.
 

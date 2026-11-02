@@ -1,0 +1,1076 @@
+{
+  "Phase": "antes",
+  "Utc": "2026-11-02T16:34:36.01277Z",
+  "DataHash": "20D69479A5A7D342AD3064DAB77D47703091869EFE90F701A2C79927EA3C7355",
+  "Results": [
+    {
+      "Name": "01_meus",
+      "Rows": 3,
+      "ResultHash": "C274B15504DA2705E4F4224ADF5AC07F39D271A880FB70F4668EB5BD63B2E38A",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Filter",
+          "Logical": "Filter",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "7",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "8",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "13",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "9"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "02_atendimentos",
+      "Rows": 2,
+      "ResultHash": "ECBAC2E48A706CEAACA4C9B87050C6D2A8A00859817518F7767FB9D9C84F0A69",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "7",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "8",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "03_comentarios",
+      "Rows": 2,
+      "ResultHash": "C00FEA09721911AD1154394AB9BE0F6803387AA9245FA580CE43C27AFF53BD5C",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Comentarios]",
+              "Index": "[PK_Comentarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "04_status",
+      "Rows": 1,
+      "ResultHash": "0DA9998D3E4129E9A338B4C5FDE33E1474462480ED336BE8A70E7085470AE36F",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "7",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "8",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "05_filtros_combinados",
+      "Rows": 1,
+      "ResultHash": "0DA9998D3E4129E9A338B4C5FDE33E1474462480ED336BE8A70E7085470AE36F",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "7",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "8",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "06_todos",
+      "Rows": 3,
+      "ResultHash": "C274B15504DA2705E4F4224ADF5AC07F39D271A880FB70F4668EB5BD63B2E38A",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "1",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Sort",
+          "Logical": "Sort",
+          "Objects": [],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "7",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "8",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "3"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "9"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    },
+    {
+      "Name": "07_detalhe",
+      "Rows": 2,
+      "ResultHash": "E47370AB4EC897BF78B5D02464D3B6A0F1EA825761F3D53A6CA74BFED9219A6C",
+      "Operators": [
+        {
+          "Node": "0",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "1",
+          "Physical": "Nested Loops",
+          "Logical": "Left Outer Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "2",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "3",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "4",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "5",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "6",
+          "Physical": "Top",
+          "Logical": "Top",
+          "Objects": [],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "7",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Chamados]",
+              "Index": "[PK_Chamados]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "8",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Categorias]",
+              "Index": "[PK_Categorias]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "9",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Prioridades]",
+              "Index": "[PK_Prioridades]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "10",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Status]",
+              "Index": "[PK_Status]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "11",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "12",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "1"
+          ]
+        },
+        {
+          "Node": "13",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "14",
+          "Physical": "Nested Loops",
+          "Logical": "Inner Join",
+          "Objects": [],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "15",
+          "Physical": "Compute Scalar",
+          "Logical": "Compute Scalar",
+          "Objects": [],
+          "ActualRows": []
+        },
+        {
+          "Node": "16",
+          "Physical": "Clustered Index Scan",
+          "Logical": "Clustered Index Scan",
+          "Objects": [
+            {
+              "Table": "[Comentarios]",
+              "Index": "[PK_Comentarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        },
+        {
+          "Node": "17",
+          "Physical": "Clustered Index Seek",
+          "Logical": "Clustered Index Seek",
+          "Objects": [
+            {
+              "Table": "[Usuarios]",
+              "Index": "[PK_Usuarios]"
+            }
+          ],
+          "ActualRows": [
+            "2"
+          ]
+        }
+      ],
+      "ActualPlanTimeMs": [
+        {
+          "CPU": "0",
+          "Elapsed": "0"
+        }
+      ]
+    }
+  ]
+}

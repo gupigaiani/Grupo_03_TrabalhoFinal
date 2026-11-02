@@ -5,6 +5,7 @@ using System.Security.Claims;
 using TechHelpSolutions.Data;
 using TechHelpSolutions.DTOs;
 using TechHelpSolutions.Models;
+using TechHelpSolutions.Services;
 
 [ApiController]
 [Route("api/usuarios")]
@@ -47,7 +48,7 @@ public class UsuariosController : ControllerBase
         {
             Nome = dto.Nome.Trim(),
             Email = emailNormalizado,
-            Senha = dto.Senha,
+            Senha = new PasswordHashService().Hash(dto.Senha),
             Tipo = "Usuario"
         };
 
@@ -120,7 +121,7 @@ public class UsuariosController : ControllerBase
         usuario.Tipo = isAdmin ? dto.Tipo : usuario.Tipo;
 
         if (!string.IsNullOrWhiteSpace(dto.Senha))
-            usuario.Senha = dto.Senha;
+            usuario.Senha = new PasswordHashService().Hash(dto.Senha);
 
         await _context.SaveChangesAsync();
 

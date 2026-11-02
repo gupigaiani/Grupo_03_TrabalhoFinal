@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 using TechHelpSolutions.Models;
 using TechHelpSolutions.Data.Queries;
@@ -30,9 +30,9 @@ namespace TechHelpSolutions.Data
                 .HasName("ufn_DuracaoMinutos").HasSchema("dbo");
 
             modelBuilder.Entity<Usuario>().HasData(
-                new { Id = 1, Nome = "João da Silva", Email = "usuario@gmail.com", Senha = "Senha123", Tipo = "Usuario", DataCriacao = new DateTime(2026, 10, 27, 9, 31, 35).AddTicks(2929494) },
-                new { Id = 2, Nome = "Gabriel Costa", Email = "tecnico@gmail.com", Senha = "Senha123", Tipo = "Tecnico", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 2).AddTicks(6711620) },
-                new { Id = 3, Nome = "Luiz Silveira", Email = "gestor@gmail.com", Senha = "Senha123", Tipo = "Admin", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 31).AddTicks(6671228) }
+                new { Id = 1, Nome = "João da Silva", Email = "usuario@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$Qjrq0hZpiJdV2fv3hvqeTg==$XaMInIG/McJT0t3IG9BNi0mHCkBFs9CTNtlHstxjm8A=", Tipo = "Usuario", DataCriacao = new DateTime(2026, 10, 27, 9, 31, 35).AddTicks(2929494) },
+                new { Id = 2, Nome = "Gabriel Costa", Email = "tecnico@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$K+TsNXKCgbezgPQ3FR/BRw==$NoBvmFs8ZuGcS8QMJb7/dU+rkfrjfs+cDL+bli3HbT0=", Tipo = "Tecnico", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 2).AddTicks(6711620) },
+                new { Id = 3, Nome = "Luiz Silveira", Email = "gestor@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", Tipo = "Admin", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 31).AddTicks(6671228) }
             );
 
             modelBuilder.Entity<Chamado>().HasData(

@@ -1,0 +1,408 @@
+{
+  "data": "2026-11-02T15:45:07.149316-03:00",
+  "resultados": [
+    {
+      "pagina": "login.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/login.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/login.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "input",
+          "id": "email",
+          "type": "email",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "input",
+          "id": "password",
+          "type": "password",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "login-submit",
+          "type": "submit",
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": []
+    },
+    {
+      "pagina": "cadastro.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/cadastro.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/cadastro.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "input",
+          "id": "nome",
+          "type": "text",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "input",
+          "id": "email",
+          "type": "email",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "select",
+          "id": "tipo",
+          "type": null,
+          "required": false,
+          "disabled": true
+        },
+        {
+          "tag": "input",
+          "id": "senha",
+          "type": "password",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "input",
+          "id": "confirmar-senha",
+          "type": "password",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "register-submit",
+          "type": "submit",
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": [
+        "Usuario"
+      ]
+    },
+    {
+      "pagina": "home-usuario.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/home-usuario.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/home-usuario.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "button",
+          "id": null,
+          "type": null,
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": []
+    },
+    {
+      "pagina": "abrir-chamado.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/abrir-chamado.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/abrir-chamado.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "button",
+          "id": null,
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "back-button",
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "input",
+          "id": "title",
+          "type": "text",
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "select",
+          "id": "category",
+          "type": null,
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "select",
+          "id": "priority",
+          "type": null,
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "textarea",
+          "id": "description",
+          "type": null,
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "cancel-button",
+          "type": "button",
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "submit-button",
+          "type": "submit",
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": [
+        "",
+        ""
+      ]
+    },
+    {
+      "pagina": "comentarios.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/comentarios.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/comentarios.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "button",
+          "id": null,
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "back-button",
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "textarea",
+          "id": "comment-message",
+          "type": null,
+          "required": true,
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "id": "submit-button",
+          "type": "submit",
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": []
+    },
+    {
+      "pagina": "home-tecnico.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/home-tecnico.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/home-tecnico.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "button",
+          "id": null,
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "select",
+          "id": "priority-filter",
+          "type": null,
+          "required": false,
+          "disabled": false
+        },
+        {
+          "tag": "select",
+          "id": "status-filter",
+          "type": null,
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": [
+        "",
+        ""
+      ]
+    },
+    {
+      "pagina": "home-gestor.html",
+      "status": 200,
+      "visual": "NAO VERIFICADO",
+      "console": "NAO VERIFICADO",
+      "referencias": [
+        {
+          "url": "http://127.0.0.1:5500/styles/common.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/styles/pages/home-gestor.css",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/app.js",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:5500/scripts/pages/home-gestor.js",
+          "status": 200
+        },
+        {
+          "url": "https://vlibras.gov.br/app/vlibras-plugin.js",
+          "resultado": "externo; nao executado/verificado no navegador"
+        }
+      ],
+      "controles_no_HTML": [
+        {
+          "tag": "button",
+          "id": null,
+          "type": null,
+          "required": false,
+          "disabled": false
+        }
+      ],
+      "opcoes_no_HTML": []
+    }
+  ]
+}

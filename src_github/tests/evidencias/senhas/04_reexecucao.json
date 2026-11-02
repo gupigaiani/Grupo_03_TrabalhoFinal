@@ -1,0 +1,21 @@
+{
+  "Utc": "2026-11-02T19:47:04.990627Z",
+  "Database": "TechHelpSolutions",
+  "Counts": {
+    "Usuarios": 3,
+    "Categorias": 4,
+    "Prioridades": 3,
+    "Status": 3,
+    "Chamados": 3,
+    "Comentarios": 2,
+    "__EFMigrationsHistory": 3
+  },
+  "ChangedUserIds": [],
+  "BeforeDataHash": "4AA148E0F78A56D1C25B504131E3C501CD56F85DF6DC1ED179AE323D53853686",
+  "AfterDataHash": "4AA148E0F78A56D1C25B504131E3C501CD56F85DF6DC1ED179AE323D53853686",
+  "NonPasswordDataHash": "96085BF623E1BC321AEBBC82746476044A9F46E19BBBC1439CB3B7B98CFD9056",
+  "ObjectDefinitionsHash": "E69F677AA7D7148EFF61121FB4CDF2043DA0854C8A5AFA7775B29D955E8DAA78",
+  "Backup": null,
+  "Algorithm": "PBKDF2-SHA256",
+  "Iterations": 600000
+}

@@ -4,10 +4,12 @@ using System.Security.Claims;
 using System.Text;
 using TechHelpSolutions.Data;
 using TechHelpSolutions.DTOs;
+using TechHelpSolutions.Services;
 
 public class AuthService
 {
     private readonly AppDbContext _context;
+    private readonly PasswordHashService _passwords = new();
     private readonly string _key = "NSIONFANSDFONAPSMFDPKSDBHPIFNSNOVASNDFIW";
 
     public AuthService(AppDbContext context)
@@ -18,9 +20,9 @@ public class AuthService
     public AuthLoginResponseDTO? Login(LoginDTO dto)
     {
         var usuario = _context.Usuarios
-            .FirstOrDefault(u => u.Email == dto.Email && u.Senha == dto.Senha);
+            .FirstOrDefault(u => u.Email == dto.Email);
 
-        if (usuario == null)
+        if (usuario == null || !_passwords.Verify(dto.Senha, usuario.Senha))
             return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();

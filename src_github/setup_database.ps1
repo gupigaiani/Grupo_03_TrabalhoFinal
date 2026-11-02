@@ -83,7 +83,25 @@ GO
     Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $installationPath)
 }
 
+function Protect-DatabasePasswords {
+    $oldConnection = $env:THS_PASSWORD_CONNECTION
+    try {
+        $builder = [System.Data.SqlClient.SqlConnectionStringBuilder]::new()
+        $builder['Data Source'] = $Instance
+        $builder['Initial Catalog'] = 'TechHelpSolutions'
+        $builder['Integrated Security'] = $true
+        $builder['TrustServerCertificate'] = $true
+        $env:THS_PASSWORD_CONNECTION = $builder.ConnectionString
+        $evidence = Join-Path $PSScriptRoot ('tests/evidencias/senhas/setup_' + [guid]::NewGuid().ToString('N') + '.json')
+        & dotnet run --project (Join-Path $PSScriptRoot 'tools/PasswordMaintenance/PasswordMaintenance.csproj') -- migrate $evidence
+        if ($LASTEXITCODE -ne 0) { throw 'Verificacao/migracao de senhas falhou; consulte permissoes e backup. Base preservada.' }
+    }
+    finally { $env:THS_PASSWORD_CONNECTION = $oldConnection }
+}
+
 try {
+    if (-not (Get-Command dotnet -CommandType Application -ErrorAction SilentlyContinue)) { throw 'Dependencia ausente: SDK .NET para verificar/migrar senhas. Nenhuma dependencia sera instalada.' }
+    if (-not (Test-Path (Join-Path $PSScriptRoot 'tools/PasswordMaintenance/PasswordMaintenance.csproj'))) { throw 'Ferramenta PasswordMaintenance ausente.' }
     $sourcePath = Join-Path $PSScriptRoot 'database/script.sql'
     $validationPath = Join-Path $PSScriptRoot 'database/np2/07_validacao.sql'
     $objectPaths = @(
@@ -123,8 +141,9 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
         if ($metadata.DatabaseState -ne 'ONLINE') { throw "Banco existente em estado $($metadata.DatabaseState). Nenhuma tentativa de recriacao sera feita." }
         Write-Host 'Banco existente: verificando inicializacao, sem repetir a carga...'
         Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
+        Protect-DatabasePasswords
         Install-Np2Objects -Paths $objectPaths
-        Write-Host 'Banco ja inicializado e validado. Nenhum dado foi alterado.'
+        Write-Host 'Banco ja inicializado e validado. Carga nao repetida; senhas verificadas/protegidas.'
         return
     }
     if ($metadata.CanCreate -ne 1) { throw 'A conta Windows nao possui CREATE ANY DATABASE. Solicite a permissao ao administrador.' }
@@ -196,6 +215,7 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
     Write-Host 'Criando banco e carregando estrutura e seeds oficiais...'
     Write-Host (Invoke-DatabaseCommand -InputFile $temporaryPath)
     Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
+    Protect-DatabasePasswords
     Install-Np2Objects -Paths $objectPaths
     Write-Host 'Inicializacao concluida e validada com sucesso.'
 }

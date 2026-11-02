@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ShowPlanXML xmlns="http://schemas.microsoft.com/sqlserver/2004/07/showplan" Version="1.599" Build="17.0.1000.7">
+  <BatchSequence>
+    <Batch>
+      <Statements>
+        <StmtSimple StatementText="SELECT [v].[Id], [v].[ChamadoId], [v].[Mensagem], [v].[DataEnvio], [v].[UsuarioId] AS [Id], [v].[UsuarioNome] AS [Nome], [v].[UsuarioEmail] AS [Email], [v].[UsuarioTipo] AS [Tipo]&#xD;&#xA;FROM [dbo].[vw_ComentariosDetalhados] AS [v]&#xD;&#xA;WHERE [v].[ChamadoId] = @__ticketId_0&#xD;&#xA;ORDER BY [v].[DataEnvio]" StatementId="1" StatementCompId="2" StatementType="SELECT" StatementSqlHandle="0x0900E4F3C6404FB64A8FF4D1A5CFD89F75650000000000000000000000000000000000000000000000000000" DatabaseContextSettingsId="1" ParentObjectId="0" StatementParameterizationType="1" RetrievedFromCache="true" StatementSubTreeCost="0.0181032" StatementEstRows="2" SecurityPolicyApplied="false" StatementOptmLevel="FULL" QueryHash="0xC20FDB68C535AB0D" QueryPlanHash="0x723BC43DE17D7300" StatementOptmEarlyAbortReason="GoodEnoughPlanFound" CardinalityEstimationModelVersion="170">
+          <StatementSetOptions QUOTED_IDENTIFIER="true" ARITHABORT="false" CONCAT_NULL_YIELDS_NULL="true" ANSI_NULLS="true" ANSI_PADDING="true" ANSI_WARNINGS="true" NUMERIC_ROUNDABORT="false"></StatementSetOptions>
+          <QueryPlan DegreeOfParallelism="0" MemoryGrant="1024" NonParallelPlanReason="NoParallelPlansInDesktopOrExpressEdition" CachedPlanSize="40" CompileTime="1" CompileCPU="1" CompileMemory="336">
+            <MemoryGrantInfo SerialRequiredMemory="512" SerialDesiredMemory="544" RequiredMemory="512" DesiredMemory="544" RequestedMemory="1024" GrantWaitTime="0" MaxQueryMemory="683624" GrantedMemory="1024" MaxUsedMemory="16"></MemoryGrantInfo>
+            <OptimizerHardwareDependentProperties EstimatedAvailableMemoryGrant="200489" EstimatedPagesCached="100244" EstimatedAvailableDegreeOfParallelism="4" MaxCompileMemory="2749200"></OptimizerHardwareDependentProperties>
+            <OptimizerStatsUsage>
+              <StatisticsInfo LastUpdate="2026-11-02T12:52:11.33" ModificationCount="12" SamplingPercent="100" Statistics="[PK_Usuarios]" Table="[Usuarios]" Schema="[dbo]" Database="[TechHelpSolutions]"></StatisticsInfo>
+              <StatisticsInfo LastUpdate="2026-11-02T12:52:11.32" ModificationCount="0" SamplingPercent="100" Statistics="[IX_Comentarios_UsuarioId]" Table="[Comentarios]" Schema="[dbo]" Database="[TechHelpSolutions]"></StatisticsInfo>
+              <StatisticsInfo LastUpdate="2026-11-02T12:52:11.32" ModificationCount="0" SamplingPercent="100" Statistics="[IX_Comentarios_ChamadoId]" Table="[Comentarios]" Schema="[dbo]" Database="[TechHelpSolutions]"></StatisticsInfo>
+            </OptimizerStatsUsage>
+            <TraceFlags IsCompileTime="1">
+              <TraceFlag Value="8017" Scope="Global"></TraceFlag>
+            </TraceFlags>
+            <TraceFlags IsCompileTime="0">
+              <TraceFlag Value="8017" Scope="Global"></TraceFlag>
+            </TraceFlags>
+            <QueryTimeStats ElapsedTime="0" CpuTime="0"></QueryTimeStats>
+            <RelOp NodeId="0" PhysicalOp="Nested Loops" LogicalOp="Inner Join" EstimateRows="2" EstimateIO="0" EstimateCPU="8.36e-06" AvgRowSize="16133" EstimatedTotalSubtreeCost="0.0181032" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+              <OutputList>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Id"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="ChamadoId"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Mensagem"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="DataEnvio"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Nome"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Email"></ColumnReference>
+                <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Tipo"></ColumnReference>
+              </OutputList>
+              <RunTimeInformation>
+                <RunTimeCountersPerThread Thread="0" ActualRows="2" Batches="0" ActualElapsedms="0" ActualCPUms="0" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row"></RunTimeCountersPerThread>
+              </RunTimeInformation>
+              <NestedLoops Optimized="0">
+                <OuterReferences>
+                  <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                </OuterReferences>
+                <RelOp NodeId="1" PhysicalOp="Sort" LogicalOp="Sort" EstimateRows="2" EstimateIO="0.0112613" EstimateCPU="0.000107175" AvgRowSize="4055" EstimatedTotalSubtreeCost="0.0146536" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                  <OutputList>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Id"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="ChamadoId"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Mensagem"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="DataEnvio"></ColumnReference>
+                  </OutputList>
+                  <MemoryFractions Input="1" Output="1"></MemoryFractions>
+                  <RunTimeInformation>
+                    <RunTimeCountersPerThread Thread="0" ActualRows="2" Batches="0" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="0" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" ActualRebinds="1" ActualRewinds="0" ActualEndOfScans="1" ActualExecutions="1" InputMemoryGrant="1024" OutputMemoryGrant="640" UsedMemoryGrant="16" ActualExecutionMode="Row"></RunTimeCountersPerThread>
+                  </RunTimeInformation>
+                  <Sort Distinct="0">
+                    <OrderBy>
+                      <OrderByColumn Ascending="1">
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="DataEnvio"></ColumnReference>
+                      </OrderByColumn>
+                    </OrderBy>
+                    <RelOp NodeId="2" PhysicalOp="Clustered Index Scan" LogicalOp="Clustered Index Scan" EstimateRows="2" EstimatedRowsRead="2" EstimateIO="0.003125" EstimateCPU="0.0001592" AvgRowSize="4055" EstimatedTotalSubtreeCost="0.0032842" TableCardinality="2" Parallel="0" EstimateRebinds="0" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                      <OutputList>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Id"></ColumnReference>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="ChamadoId"></ColumnReference>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Mensagem"></ColumnReference>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="DataEnvio"></ColumnReference>
+                      </OutputList>
+                      <RunTimeInformation>
+                        <RunTimeCountersPerThread Thread="0" ActualRows="2" Batches="0" ActualElapsedms="0" ActualCPUms="0" ActualScans="1" ActualLogicalReads="2" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" ActualRowsRead="2" ActualEndOfScans="1" ActualExecutions="1" ActualExecutionMode="Row"></RunTimeCountersPerThread>
+                      </RunTimeInformation>
+                      <IndexScan Ordered="0" ForcedIndex="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                        <DefinedValues>
+                          <DefinedValue>
+                            <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Id"></ColumnReference>
+                          </DefinedValue>
+                          <DefinedValue>
+                            <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="ChamadoId"></ColumnReference>
+                          </DefinedValue>
+                          <DefinedValue>
+                            <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                          </DefinedValue>
+                          <DefinedValue>
+                            <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="Mensagem"></ColumnReference>
+                          </DefinedValue>
+                          <DefinedValue>
+                            <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="DataEnvio"></ColumnReference>
+                          </DefinedValue>
+                        </DefinedValues>
+                        <Object Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Index="[PK_Comentarios]" Alias="[c]" IndexKind="Clustered" Storage="RowStore"></Object>
+                        <Predicate>
+                          <ScalarOperator ScalarString="[TechHelpSolutions].[dbo].[Comentarios].[ChamadoId] as [c].[ChamadoId]=[@__ticketId_0]">
+                            <Compare CompareOp="EQ">
+                              <ScalarOperator>
+                                <Identifier>
+                                  <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="ChamadoId"></ColumnReference>
+                                </Identifier>
+                              </ScalarOperator>
+                              <ScalarOperator>
+                                <Identifier>
+                                  <ColumnReference Column="@__ticketId_0"></ColumnReference>
+                                </Identifier>
+                              </ScalarOperator>
+                            </Compare>
+                          </ScalarOperator>
+                        </Predicate>
+                      </IndexScan>
+                    </RelOp>
+                  </Sort>
+                </RelOp>
+                <RelOp NodeId="3" PhysicalOp="Clustered Index Seek" LogicalOp="Clustered Index Seek" EstimateRows="1" EstimatedRowsRead="1" EstimateIO="0.003125" EstimateCPU="0.0001581" AvgRowSize="12087" EstimatedTotalSubtreeCost="0.0034412" TableCardinality="3" Parallel="0" EstimateRebinds="1" EstimateRewinds="0" EstimatedExecutionMode="Row">
+                  <OutputList>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Nome"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Email"></ColumnReference>
+                    <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Tipo"></ColumnReference>
+                  </OutputList>
+                  <RunTimeInformation>
+                    <RunTimeCountersPerThread Thread="0" ActualRows="2" Batches="0" ActualElapsedms="0" ActualCPUms="0" ActualScans="0" ActualLogicalReads="4" ActualPhysicalReads="0" ActualReadAheads="0" ActualLobLogicalReads="0" ActualLobPhysicalReads="0" ActualLobReadAheads="0" ActualRowsRead="2" ActualEndOfScans="0" ActualExecutions="2" ActualExecutionMode="Row"></RunTimeCountersPerThread>
+                  </RunTimeInformation>
+                  <IndexScan Ordered="1" ScanDirection="FORWARD" ForcedIndex="0" ForceSeek="0" ForceScan="0" NoExpandHint="0" Storage="RowStore">
+                    <DefinedValues>
+                      <DefinedValue>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Nome"></ColumnReference>
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Email"></ColumnReference>
+                      </DefinedValue>
+                      <DefinedValue>
+                        <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Tipo"></ColumnReference>
+                      </DefinedValue>
+                    </DefinedValues>
+                    <Object Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Index="[PK_Usuarios]" Alias="[u]" IndexKind="Clustered" Storage="RowStore"></Object>
+                    <SeekPredicates>
+                      <SeekPredicateNew>
+                        <SeekKeys>
+                          <Prefix ScanType="EQ">
+                            <RangeColumns>
+                              <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Usuarios]" Alias="[u]" Column="Id"></ColumnReference>
+                            </RangeColumns>
+                            <RangeExpressions>
+                              <ScalarOperator ScalarString="[TechHelpSolutions].[dbo].[Comentarios].[UsuarioId] as [c].[UsuarioId]">
+                                <Identifier>
+                                  <ColumnReference Database="[TechHelpSolutions]" Schema="[dbo]" Table="[Comentarios]" Alias="[c]" Column="UsuarioId"></ColumnReference>
+                                </Identifier>
+                              </ScalarOperator>
+                            </RangeExpressions>
+                          </Prefix>
+                        </SeekKeys>
+                      </SeekPredicateNew>
+                    </SeekPredicates>
+                  </IndexScan>
+                </RelOp>
+              </NestedLoops>
+            </RelOp>
+            <ParameterList>
+              <ColumnReference Column="@__ticketId_0" ParameterDataType="int" ParameterCompiledValue="(1)" ParameterRuntimeValue="(1)"></ColumnReference>
+            </ParameterList>
+          </QueryPlan>
+        </StmtSimple>
+      </Statements>
+    </Batch>
+  </BatchSequence>
+</ShowPlanXML>

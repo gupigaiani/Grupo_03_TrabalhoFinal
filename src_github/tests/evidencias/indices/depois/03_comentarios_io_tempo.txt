@@ -1,0 +1,45 @@
+EXECUCAO 1 (apos aquecimento; STATISTICS IO/TIME reais)
+Tabela ''Usuarios''. Contagem de verificação 0, leituras lógicas 4, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+Tabela ''Comentarios''. Contagem de verificação 1, leituras lógicas 6, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+EXECUCAO 2 (apos aquecimento; STATISTICS IO/TIME reais)
+Tabela ''Usuarios''. Contagem de verificação 0, leituras lógicas 4, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+Tabela ''Comentarios''. Contagem de verificação 1, leituras lógicas 6, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+EXECUCAO 3 (apos aquecimento; STATISTICS IO/TIME reais)
+Tabela ''Usuarios''. Contagem de verificação 0, leituras lógicas 4, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+Tabela ''Comentarios''. Contagem de verificação 1, leituras lógicas 6, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+EXECUCAO 4 (apos aquecimento; STATISTICS IO/TIME reais)
+Tabela ''Usuarios''. Contagem de verificação 0, leituras lógicas 4, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+Tabela ''Comentarios''. Contagem de verificação 1, leituras lógicas 6, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+EXECUCAO 5 (apos aquecimento; STATISTICS IO/TIME reais)
+Tabela ''Usuarios''. Contagem de verificação 0, leituras lógicas 4, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+Tabela ''Comentarios''. Contagem de verificação 1, leituras lógicas 6, leituras físicas 0, leituras do servidor de páginas 0, leituras antecipadas 0, leituras antecipadas do servidor de páginas 0, leituras lógicas de LOB 0, leituras físicas de LOB 0, leituras de LOB no servidor de páginas 0, leituras antecipadas de LOB 0, leituras antecipadas de LOB no servidor de páginas 0.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.
+
+ Tempos de Execução do SQL Server:
+ Tempo de CPU = 0 ms, tempo decorrido = 0 ms.

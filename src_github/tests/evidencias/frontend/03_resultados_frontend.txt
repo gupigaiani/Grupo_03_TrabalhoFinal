@@ -1,0 +1,31 @@
+﻿✔ referencias locais, IDs e scripts/estilos das sete paginas (13.5318ms)
+✔ sinks HTML restantes: somente literais estaticos ou SVGs fixos (1.6239ms)
+✔ texto literal e ausencia de elementos ativos - payload 1 (54.8675ms)
+✔ texto literal e ausencia de elementos ativos - payload 2 (14.0626ms)
+✔ texto literal e ausencia de elementos ativos - payload 3 (13.9526ms)
+✔ texto literal e ausencia de elementos ativos - payload 4 (11.7406ms)
+✔ texto literal e ausencia de elementos ativos - payload 5 (13.1736ms)
+✔ texto literal e ausencia de elementos ativos - payload 6 (15.6376ms)
+✔ cadastro oferece apenas Usuario e envia valor fixo mesmo com DOM manipulado (2.8846ms)
+✔ cadastro conserva confirmacao de senha e mensagens de erro como texto (3.6392ms)
+✔ listagem de usuario conserva ordem, contadores, classes e links (3.0116ms)
+✔ tecnico conserva botoes, delegacao de clique, filtros e navegacao (7.5244ms)
+✔ IDs nao viram atributos HTML nem alteram a URL de navegacao (3.2552ms)
+✔ comentarios conservam autoria visual, envio, atualizacao e retorno (2.9871ms)
+✔ formulario de chamado conserva catalogos, criacao e edicao (4.0138ms)
+✔ painel do gestor conserva indicadores, graficos e cores controladas (3.4018ms)
+✔ estados vazios e mensagens permanecem funcionais (6.2267ms)
+✔ login e redirecionamento preservados para Usuario (1.4729ms)
+✔ login e redirecionamento preservados para Tecnico (1.236ms)
+✔ login e redirecionamento preservados para Gestor (1.2004ms)
+✔ login e redirecionamento preservados para Admin (1.1155ms)
+✔ cabecalho, logout e autenticacao usam texto e os contratos existentes (2.2001ms)
+✔ GETs reais da API podem alimentar as paginas sem escrita no banco (153.6921ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 354.3494

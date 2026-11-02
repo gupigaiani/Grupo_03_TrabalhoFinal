@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -18,9 +18,9 @@ namespace UsuariosApi.Migrations
                 columns: new[] { "Id", "DataCriacao", "Email", "Nome", "Senha", "Tipo" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 10, 27, 9, 31, 35, 292, DateTimeKind.Unspecified).AddTicks(9494), "usuario@gmail.com", "João da Silva", "Senha123", "Usuario" },
-                    { 2, new DateTime(2026, 10, 27, 9, 32, 2, 671, DateTimeKind.Unspecified).AddTicks(1620), "tecnico@gmail.com", "Gabriel Costa", "Senha123", "Tecnico" },
-                    { 3, new DateTime(2026, 10, 27, 9, 32, 31, 667, DateTimeKind.Unspecified).AddTicks(1228), "gestor@gmail.com", "Luiz Silveira", "Senha123", "Admin" }
+                    { 1, new DateTime(2026, 10, 27, 9, 31, 35, 292, DateTimeKind.Unspecified).AddTicks(9494), "usuario@gmail.com", "João da Silva", "THS$1$PBKDF2-SHA256$600000$Qjrq0hZpiJdV2fv3hvqeTg==$XaMInIG/McJT0t3IG9BNi0mHCkBFs9CTNtlHstxjm8A=", "Usuario" },
+                    { 2, new DateTime(2026, 10, 27, 9, 32, 2, 671, DateTimeKind.Unspecified).AddTicks(1620), "tecnico@gmail.com", "Gabriel Costa", "THS$1$PBKDF2-SHA256$600000$K+TsNXKCgbezgPQ3FR/BRw==$NoBvmFs8ZuGcS8QMJb7/dU+rkfrjfs+cDL+bli3HbT0=", "Tecnico" },
+                    { 3, new DateTime(2026, 10, 27, 9, 32, 31, 667, DateTimeKind.Unspecified).AddTicks(1228), "gestor@gmail.com", "Luiz Silveira", "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", "Admin" }
                 });
 
             migrationBuilder.InsertData(
