@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comentários - TechHelp</title>
+  <link rel="stylesheet" href="../styles/common.css">
+  <link rel="stylesheet" href="../styles/pages/comentarios.css">
+</head>
+<body class="app-body">
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a id="header-home-link" href="./home-usuario.html" class="brand-link">TechHelp Solutions</a>
+
+      <div class="topbar__actions">
+        <div class="user-chip">
+          <div class="user-chip__avatar" data-user-initials>TH</div>
+          <span class="user-chip__name" data-user-name>Usuário</span>
+        </div>
+
+        <button data-logout class="button button--danger-text">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 17 5-5-5-5"></path>
+            <path d="M21 12H9"></path>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          </svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell page-shell--md">
+    <div class="comments-page">
+      <button id="back-button" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="m12 19-7-7 7-7"></path>
+          <path d="M19 12H5"></path>
+        </svg>
+        <span>Voltar</span>
+      </button>
+
+      <section class="list-panel">
+        <div class="comments-card__header">
+          <div class="comments-card__header-layout">
+            <div>
+              <p id="ticket-number" class="comments-card__number">Chamado</p>
+              <h1 id="ticket-title" class="comments-card__title">Carregando...</h1>
+              <p id="ticket-description" class="comments-card__description"></p>
+            </div>
+            <div class="comments-card__badges">
+              <span id="ticket-category" class="badge badge--neutral">-</span>
+              <span id="ticket-priority" class="badge badge--neutral">-</span>
+              <span id="ticket-status" class="badge badge--neutral">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="comments-message" class="list-panel__message">Carregando comentários...</div>
+        <div class="comment-thread">
+          <div id="comments-list" class="comment-thread__list hidden"></div>
+        </div>
+
+        <div class="comments-form">
+          <form id="comment-form" class="form-stack">
+            <div class="field">
+              <label for="comment-message" class="field__label">Novo comentário</label>
+              <textarea id="comment-message" rows="4" required class="field__textarea field__textarea--fixed" placeholder="Escreva uma mensagem..."></textarea>
+            </div>
+
+            <div class="comments-form__footer">
+              <p id="form-message" class="form-message hidden"></p>
+              <button id="submit-button" type="submit" class="button button--primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.1z"></path>
+                  <path d="m21.854 2.147-10.94 10.939"></path>
+                </svg>
+                <span>Enviar comentário</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="../scripts/app.js"></script>
+  <script src="../scripts/pages/comentarios.js"></script>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+</body>
+</html>

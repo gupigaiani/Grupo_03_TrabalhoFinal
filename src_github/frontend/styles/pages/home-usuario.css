@@ -1,0 +1,131 @@
+.user-dashboard {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.user-dashboard__hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.user-dashboard__title-block {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.ticket-list {
+  display: grid;
+}
+
+.ticket-item {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  transition: background-color 0.2s ease;
+}
+
+.ticket-item:first-child {
+  border-top: 0;
+}
+
+.ticket-item:hover {
+  background: #f8fafc;
+}
+
+.ticket-item__layout {
+  display: flex;
+  gap: 1rem;
+}
+
+.ticket-item__icon {
+  color: var(--color-warning);
+}
+
+.ticket-item__icon--progress {
+  color: var(--color-primary);
+}
+
+.ticket-item__icon--closed {
+  color: var(--color-success);
+}
+
+.ticket-item__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ticket-item__headline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.ticket-item__number {
+  font-size: 0.9rem;
+  color: var(--color-text-soft);
+}
+
+.ticket-item__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.ticket-item__description {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.ticket-item__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.ticket-item__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--color-text-soft);
+}
+
+.ticket-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.user-ticket-button {
+  min-width: 11rem;
+}
+
+@media (max-width: 900px) {
+  .user-dashboard__hero {
+    flex-direction: column;
+  }
+
+  .ticket-item__layout,
+  .ticket-item__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ticket-item__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .user-ticket-button {
+    width: 100%;
+  }
+}

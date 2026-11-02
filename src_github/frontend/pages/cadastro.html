@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - TechHelp</title>
+  <link rel="stylesheet" href="../styles/common.css">
+  <link rel="stylesheet" href="../styles/pages/cadastro.css">
+</head>
+<body class="app-body app-body--centered app-body--gradient">
+  <main class="register-shell">
+    <section class="surface-card register-card">
+      <header class="register-card__header">
+        <h1 class="register-card__title">TechHelp Solutions</h1>
+        <p class="register-card__subtitle">Criar Nova Conta</p>
+      </header>
+
+      <form id="register-form" class="form-stack">
+        <div class="field">
+          <label for="nome" class="field__label">Nome Completo</label>
+          <div class="field__control">
+            <span class="field__icon" aria-hidden="true">👤</span>
+            <input id="nome" name="nome" type="text" required placeholder="Seu nome completo" class="field__input field__input--with-icon">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email" class="field__label">E-mail</label>
+          <div class="field__control">
+            <span class="field__icon" aria-hidden="true">📧</span>
+            <input id="email" name="email" type="email" required placeholder="seu@email.com" class="field__input field__input--with-icon">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="tipo" class="field__label">Tipo de Usuário</label>
+          <div class="field__control">
+            <span class="field__icon" aria-hidden="true">👥</span>
+            <select id="tipo" name="tipo" required class="field__select field__select--with-icon">
+              <option value="">Selecione o tipo</option>
+              <option value="Usuario">Usuário</option>
+              <option value="Tecnico">Técnico</option>
+              <option value="Gestor">Gestor</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="senha" class="field__label">Senha</label>
+          <div class="field__control">
+            <span class="field__icon" aria-hidden="true">🔒</span>
+            <input id="senha" name="senha" type="password" required minlength="4" placeholder="********" class="field__input field__input--with-icon">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="confirmar-senha" class="field__label">Confirmar Senha</label>
+          <div class="field__control">
+            <span class="field__icon" aria-hidden="true">🔒</span>
+            <input id="confirmar-senha" name="confirmar-senha" type="password" required minlength="4" placeholder="********" class="field__input field__input--with-icon">
+          </div>
+        </div>
+
+        <button id="register-submit" type="submit" class="button button--primary button--block">
+          Cadastrar
+        </button>
+
+        <p id="register-message" class="form-message hidden"></p>
+      </form>
+
+      <div class="register-card__footer">
+        <p>
+          Já tem uma conta?
+          <a href="./login.html" class="auth-link">Faça login</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="../scripts/pages/cadastro.js"></script>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+</body>
+</html>

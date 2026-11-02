@@ -1,0 +1,105 @@
+.tech-dashboard {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.tech-filter-card {
+  padding: 1.25rem;
+}
+
+.tech-filter-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  color: var(--color-text-muted);
+}
+
+.tech-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.tech-ticket-list {
+  display: grid;
+}
+
+.tech-ticket-item {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.tech-ticket-item:first-child {
+  border-top: 0;
+}
+
+.tech-ticket-item:hover {
+  background: #f8fafc;
+}
+
+.tech-ticket-item__content {
+  min-width: 0;
+}
+
+.tech-ticket-item__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.tech-ticket-item__number {
+  font-size: 0.9rem;
+  color: var(--color-text-soft);
+}
+
+.tech-ticket-item__category {
+  font-size: 0.92rem;
+  color: var(--color-text-muted);
+}
+
+.tech-ticket-item__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.tech-ticket-item__description {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.tech-ticket-item__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.85rem;
+  font-size: 0.82rem;
+  color: var(--color-text-soft);
+}
+
+.tech-ticket-item__actions {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 12rem;
+}
+
+@media (max-width: 900px) {
+  .tech-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tech-ticket-item {
+    flex-direction: column;
+  }
+
+  .tech-ticket-item__actions {
+    min-width: 0;
+  }
+}

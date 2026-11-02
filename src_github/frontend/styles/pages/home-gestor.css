@@ -1,0 +1,314 @@
+.metric-bar-initial-width {
+  width: 0%;
+}
+
+.manager-page {
+  min-height: 100vh;
+}
+
+.manager-dashboard {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.manager-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.manager-metric-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.manager-metric-card__value {
+  margin: 0;
+  font-size: 1.85rem;
+  font-weight: 800;
+}
+
+.manager-metric-card__label {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--color-text-soft);
+}
+
+.manager-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.manager-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.manager-panel__title {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.manager-empty-state {
+  color: var(--color-text-soft);
+  font-size: 0.95rem;
+}
+
+.manager-progress {
+  margin-bottom: 1rem;
+}
+
+.manager-progress:last-child {
+  margin-bottom: 0;
+}
+
+.manager-progress__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.45rem;
+}
+
+.manager-progress__track {
+  width: 100%;
+  height: 0.5rem;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.manager-progress__fill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.manager-progress__fill--success {
+  background: #16a34a;
+}
+
+.manager-progress__fill--danger {
+  background: #dc2626;
+}
+
+.manager-performance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.manager-performance-card__label {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-text-soft);
+}
+
+.manager-performance-card__value {
+  margin: 0.35rem 0 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.manager-bars-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.75rem;
+  min-height: 220px;
+}
+
+.manager-bar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.manager-bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(75 85 99);
+}
+
+.manager-bar-track {
+  display: flex;
+  align-items: end;
+  width: 100%;
+  min-height: 160px;
+  border-radius: 0.9rem;
+  background: linear-gradient(180deg, rgb(239 246 255) 0%, rgb(219 234 254) 100%);
+  padding: 0.35rem;
+}
+
+.manager-bar-fill {
+  width: 100%;
+  border-radius: 0.65rem;
+  background: linear-gradient(180deg, rgb(29 78 216) 0%, rgb(37 99 235) 40%, rgb(59 130 246) 100%);
+  min-height: 10px;
+  transition: height 0.3s ease;
+}
+
+.manager-bar-label {
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+  text-align: center;
+  line-height: 1rem;
+}
+
+.manager-chart-caption {
+  font-size: 0.875rem;
+  color: rgb(107 114 128);
+}
+
+.manager-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.manager-row-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.875rem;
+}
+
+.manager-row-label {
+  color: rgb(31 41 55);
+  font-weight: 500;
+}
+
+.manager-row-meta {
+  color: rgb(107 114 128);
+  white-space: nowrap;
+}
+
+.manager-row-track {
+  width: 100%;
+  height: 0.7rem;
+  border-radius: 9999px;
+  background-color: rgb(229 231 235);
+  overflow: hidden;
+}
+
+.manager-row-fill {
+  height: 100%;
+  border-radius: inherit;
+  min-width: 0;
+  transition: width 0.3s ease;
+}
+
+.manager-status-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.manager-donut-chart {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  position: relative;
+  margin: 0 auto;
+  background: conic-gradient(rgb(209 213 219) 0deg 360deg);
+}
+
+.manager-donut-chart::after {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border-radius: 9999px;
+  background: white;
+  box-shadow: inset 0 0 0 1px rgb(229 231 235);
+}
+
+.manager-donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+}
+
+.manager-donut-total {
+  font-size: 1.85rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: rgb(17 24 39);
+}
+
+.manager-donut-subtitle {
+  font-size: 0.75rem;
+  color: rgb(107 114 128);
+}
+
+.manager-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.manager-legend-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.manager-legend-swatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.manager-legend-name {
+  font-size: 0.875rem;
+  color: rgb(31 41 55);
+  font-weight: 500;
+}
+
+.manager-legend-value {
+  font-size: 0.875rem;
+  color: rgb(107 114 128);
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .manager-metrics-grid,
+  .manager-grid,
+  .manager-performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-bars-grid {
+    gap: 0.5rem;
+    min-height: 180px;
+  }
+
+  .manager-bar-track {
+    min-height: 130px;
+  }
+
+  .manager-status-layout {
+    grid-template-columns: 1fr;
+  }
+}

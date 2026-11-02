@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Gestor</title>
+  <link rel="stylesheet" href="../styles/common.css">
+  <link rel="stylesheet" href="../styles/pages/home-gestor.css">
+</head>
+<body class="app-body manager-page">
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__brand">
+        <a href="./home-gestor.html" class="brand-link">TechHelp Solutions</a>
+      </div>
+
+      <div class="topbar__actions">
+        <div class="user-chip">
+          <div class="user-chip__avatar" data-user-initials>RC</div>
+          <span class="user-chip__name" data-user-name>Roberto Costa</span>
+        </div>
+        <button data-logout class="button button--danger-text">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 17 5-5-5-5"></path>
+            <path d="M21 12H9"></path>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          </svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="manager-dashboard">
+      <section class="section-heading">
+        <h1 class="section-heading__title">Dashboard do Gestor</h1>
+      </section>
+
+      <section class="manager-metrics-grid">
+        <article class="manager-metric-card">
+          <p id="metric-total" class="manager-metric-card__value">0</p>
+          <p class="manager-metric-card__label">Total de Chamados</p>
+        </article>
+
+        <article class="manager-metric-card">
+          <p id="metric-open" class="manager-metric-card__value">0</p>
+          <p class="manager-metric-card__label">Chamados Abertos</p>
+        </article>
+
+        <article class="manager-metric-card">
+          <p id="metric-avg-time" class="manager-metric-card__value">0min</p>
+          <p class="manager-metric-card__label">Tempo Médio</p>
+        </article>
+
+        <article class="manager-metric-card">
+          <p id="metric-sla" class="manager-metric-card__value">0%</p>
+          <p class="manager-metric-card__label">SLA Cumprido</p>
+        </article>
+      </section>
+
+      <p id="manager-message" class="section-heading__subtitle">Carregando indicadores...</p>
+
+      <section class="manager-grid">
+        <article class="manager-panel">
+          <h2 class="manager-panel__title">Chamados por Dia</h2>
+          <div id="tickets-by-day-empty" class="manager-empty-state">Carregando distribuicao diaria...</div>
+          <div id="tickets-by-day-chart" class="hidden">
+            <div id="tickets-by-day-bars" class="manager-bars-grid"></div>
+            <div id="tickets-by-day-legend" class="manager-chart-caption"></div>
+          </div>
+        </article>
+
+        <article class="manager-panel">
+          <h2 class="manager-panel__title">Chamados por Setor</h2>
+          <div id="tickets-by-sector-empty" class="manager-empty-state">Carregando distribuição por setor...</div>
+          <div id="tickets-by-sector-list" class="hidden"></div>
+        </article>
+
+        <article class="manager-panel">
+          <h2 class="manager-panel__title">Distribuição por Status</h2>
+          <div id="status-distribution-empty" class="manager-empty-state">Carregando distribuição por status...</div>
+          <div id="status-distribution-content" class="hidden manager-status-layout">
+            <div id="status-distribution-chart" class="manager-donut-chart" aria-label="Distribuicao por status"></div>
+            <div id="status-distribution-legend"></div>
+          </div>
+        </article>
+
+        <article class="manager-panel">
+          <h2 class="manager-panel__title">Métricas de Performance</h2>
+
+          <div class="manager-progress">
+            <div class="manager-progress__header">
+              <span>Taxa de Resolução</span>
+              <span id="resolution-rate-label">0%</span>
+            </div>
+            <div class="manager-progress__track">
+              <div id="resolution-rate-bar" class="manager-progress__fill manager-progress__fill--success metric-bar-initial-width"></div>
+            </div>
+          </div>
+
+          <div class="manager-progress">
+            <div class="manager-progress__header">
+              <span>Chamados Urgentes</span>
+              <span id="urgent-rate-label">0 / 0</span>
+            </div>
+            <div class="manager-progress__track">
+              <div id="urgent-rate-bar" class="manager-progress__fill manager-progress__fill--danger metric-bar-initial-width"></div>
+            </div>
+          </div>
+
+          <div class="manager-performance-grid">
+            <div>
+              <p class="manager-performance-card__label">Tempo Médio de Resposta</p>
+              <p id="response-time-label" class="manager-performance-card__value">-</p>
+            </div>
+            <div>
+              <p class="manager-performance-card__label">Tempo Médio de Resolução</p>
+              <p id="resolution-time-label" class="manager-performance-card__value">-</p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <script src="../scripts/app.js"></script>
+  <script src="../scripts/pages/home-gestor.js"></script>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+</body>
+</html>

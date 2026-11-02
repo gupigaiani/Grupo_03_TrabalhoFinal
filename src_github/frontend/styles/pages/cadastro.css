@@ -1,0 +1,37 @@
+.register-shell {
+  width: min(100%, 30rem);
+}
+
+.register-card {
+  padding: 2.25rem;
+}
+
+.register-card__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.register-card__subtitle {
+  margin: 0;
+  color: var(--color-text-soft);
+}
+
+.register-card__footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 640px) {
+  .register-card {
+    padding: 1.5rem;
+  }
+}

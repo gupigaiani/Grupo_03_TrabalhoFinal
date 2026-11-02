@@ -1,0 +1,134 @@
+.comments-page {
+  width: min(100%, 56rem);
+  margin: 0 auto;
+}
+
+.comments-card__header {
+  padding: 1.4rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.comments-card__header-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.comments-card__number {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-soft);
+}
+
+.comments-card__title {
+  margin: 0.25rem 0 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.comments-card__description {
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.comments-card__badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.comment-thread {
+  background: #f8fafc;
+  padding: 1.5rem;
+}
+
+.comment-thread__list {
+  display: grid;
+  gap: 1rem;
+}
+
+.comment-thread__item {
+  display: flex;
+}
+
+.comment-thread__item--mine {
+  justify-content: flex-end;
+}
+
+.comment-thread__item--other {
+  justify-content: flex-start;
+}
+
+.comment-thread__bubble {
+  width: min(100%, 42rem);
+  border-radius: 1.25rem;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.comment-thread__bubble--mine {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.comment-thread__bubble--other {
+  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.comment-thread__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.55rem;
+  font-size: 0.75rem;
+}
+
+.comment-thread__meta--mine {
+  color: #dbeafe;
+}
+
+.comment-thread__meta--other {
+  color: var(--color-text-soft);
+}
+
+.comment-thread__author {
+  font-weight: 700;
+}
+
+.comment-thread__text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.comments-form {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.comments-form__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .comments-card__title {
+    font-size: 1.5rem;
+  }
+
+  .comment-thread,
+  .comments-form {
+    padding: 1.1rem;
+  }
+}
