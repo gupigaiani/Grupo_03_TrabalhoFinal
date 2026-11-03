@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
 .SYNOPSIS
 Inicializa TechHelpSolutions a partir do export oficial, sem migrations.
@@ -83,33 +83,58 @@ GO
     Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $installationPath)
 }
 
-function Protect-DatabasePasswords {
-    $oldConnection = $env:THS_PASSWORD_CONNECTION
+# A ferramenta de migracao foi retirada do pacote. A instalacao atual ja usa seeds com hash.
+# Esta verificacao e somente leitura; nunca tenta converter ou exibir credenciais.
+function Test-DatabasePasswordFormat {
+    $builder = [System.Data.SqlClient.SqlConnectionStringBuilder]::new()
+    $builder['Data Source'] = $Instance
+    $builder['Initial Catalog'] = 'TechHelpSolutions'
+    $builder['Integrated Security'] = $true
+    $builder['TrustServerCertificate'] = $true
+    $builder['Connect Timeout'] = 15
+    $connection = [System.Data.SqlClient.SqlConnection]::new($builder.ConnectionString)
     try {
-        $builder = [System.Data.SqlClient.SqlConnectionStringBuilder]::new()
-        $builder['Data Source'] = $Instance
-        $builder['Initial Catalog'] = 'TechHelpSolutions'
-        $builder['Integrated Security'] = $true
-        $builder['TrustServerCertificate'] = $true
-        $env:THS_PASSWORD_CONNECTION = $builder.ConnectionString
-        $evidence = Join-Path $PSScriptRoot ('tests/evidencias/senhas/setup_' + [guid]::NewGuid().ToString('N') + '.json')
-        & dotnet run --project (Join-Path $PSScriptRoot 'tools/PasswordMaintenance/PasswordMaintenance.csproj') -- migrate $evidence
-        if ($LASTEXITCODE -ne 0) { throw 'Verificacao/migracao de senhas falhou; consulte permissoes e backup. Base preservada.' }
+        $connection.Open()
+        $query = $connection.CreateCommand()
+        $query.CommandText = 'SELECT Id, Senha FROM dbo.Usuarios'
+        $reader = $query.ExecuteReader()
+        try {
+            while ($reader.Read()) {
+                $valid = $false
+                $stored = $reader.GetString(1)
+                if ($stored.Length -gt 512) { throw 'Formato de hash invalido. Nenhum usuario foi alterado.' }
+                $parts = $stored.Split('$')
+                $cost = 0
+                if ($parts.Count -eq 6 -and $parts[0] -ceq 'THS' -and $parts[1] -ceq '1' -and
+                    $parts[2] -ceq 'PBKDF2-SHA256' -and $parts[3] -cmatch '^[0-9]+$' -and
+                    [int]::TryParse($parts[3], [ref]$cost) -and $cost -ge 100000 -and $cost -le 2000000) {
+                    try {
+                        $salt = [Convert]::FromBase64String($parts[4])
+                        $hash = [Convert]::FromBase64String($parts[5])
+                        $valid = $salt.Length -ge 16 -and $salt.Length -le 64 -and $hash.Length -eq 32
+                    }
+                    catch [FormatException] { $valid = $false }
+                }
+                if (-not $valid) {
+                    throw "Senha legada ou formato de hash invalido no usuario Id=$($reader.GetInt32(0)). O pacote atual nao inclui migracao de senhas. Realize manutencao com backup antes de continuar; nenhum usuario foi alterado."
+                }
+            }
+        }
+        finally { $reader.Dispose(); $query.Dispose() }
     }
-    finally { $env:THS_PASSWORD_CONNECTION = $oldConnection }
+    finally { $connection.Dispose() }
+    Write-Host 'Formato PBKDF2 das senhas verificado, sem alterar usuarios.'
 }
 
 try {
-    if (-not (Get-Command dotnet -CommandType Application -ErrorAction SilentlyContinue)) { throw 'Dependencia ausente: SDK .NET para verificar/migrar senhas. Nenhuma dependencia sera instalada.' }
-    if (-not (Test-Path (Join-Path $PSScriptRoot 'tools/PasswordMaintenance/PasswordMaintenance.csproj'))) { throw 'Ferramenta PasswordMaintenance ausente.' }
-    $sourcePath = Join-Path $PSScriptRoot 'database/script.sql'
-    $validationPath = Join-Path $PSScriptRoot 'database/np2/07_validacao.sql'
+    $sourcePath = Join-Path $PSScriptRoot 'database/01_script.sql'
+    $validationPath = Join-Path $PSScriptRoot 'database/07_validacao.sql'
     $objectPaths = @(
-        (Join-Path $PSScriptRoot 'database/np2/02_functions.sql'),
-        (Join-Path $PSScriptRoot 'database/np2/03_views.sql'),
-        (Join-Path $PSScriptRoot 'database/np2/04_procedures.sql'),
-        (Join-Path $PSScriptRoot 'database/np2/05_triggers.sql'),
-        (Join-Path $PSScriptRoot 'database/np2/06_indexes.sql')
+        (Join-Path $PSScriptRoot 'database/02_functions.sql'),
+        (Join-Path $PSScriptRoot 'database/03_views.sql'),
+        (Join-Path $PSScriptRoot 'database/04_procedures.sql'),
+        (Join-Path $PSScriptRoot 'database/05_triggers.sql'),
+        (Join-Path $PSScriptRoot 'database/06_indexes.sql')
     )
     foreach ($path in (@($sourcePath, $validationPath) + $objectPaths)) {
         if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "Arquivo obrigatorio ausente: $path" }
@@ -141,9 +166,9 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
         if ($metadata.DatabaseState -ne 'ONLINE') { throw "Banco existente em estado $($metadata.DatabaseState). Nenhuma tentativa de recriacao sera feita." }
         Write-Host 'Banco existente: verificando inicializacao, sem repetir a carga...'
         Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
-        Protect-DatabasePasswords
+        Test-DatabasePasswordFormat
         Install-Np2Objects -Paths $objectPaths
-        Write-Host 'Banco ja inicializado e validado. Carga nao repetida; senhas verificadas/protegidas.'
+        Write-Host 'Banco ja inicializado e validado. Carga nao repetida; formato das senhas verificado.'
         return
     }
     if ($metadata.CanCreate -ne 1) { throw 'A conta Windows nao possui CREATE ANY DATABASE. Solicite a permissao ao administrador.' }
@@ -215,7 +240,7 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
     Write-Host 'Criando banco e carregando estrutura e seeds oficiais...'
     Write-Host (Invoke-DatabaseCommand -InputFile $temporaryPath)
     Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
-    Protect-DatabasePasswords
+    Test-DatabasePasswordFormat
     Install-Np2Objects -Paths $objectPaths
     Write-Host 'Inicializacao concluida e validada com sucesso.'
 }
