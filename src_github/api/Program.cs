@@ -21,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ChamadoService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AdministracaoService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

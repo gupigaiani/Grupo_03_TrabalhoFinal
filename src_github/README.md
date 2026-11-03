@@ -1,6 +1,8 @@
 # TechHelpSolutions
 
-Sistema acadêmico de suporte técnico: usuários abrem e acompanham chamados, técnicos assumem e finalizam atendimentos e o gestor consulta indicadores. A NP2 preserva a base da NP1 e acrescenta objetos T-SQL, transações, concorrência e índices.
+Sistema acadêmico de suporte técnico para registrar problemas, organizar atendimentos e acompanhar sua resolução. Usuários cadastram-se, abrem e acompanham seus próprios chamados, editam chamados abertos pela interface e enviam comentários. Técnicos consultam e filtram a fila, assumem e finalizam atendimentos. O painel do gestor apresenta indicadores; contas com perfil Admin também podem excluir chamados mediante confirmação.
+
+A API oferece CRUD de chamados, cadastro/consulta/atualização/exclusão de usuários conforme suas permissões e manutenção administrativa dos catálogos. Comentários podem ser criados e consultados; não há edição ou exclusão individual pela interface. A NP2 preserva a base da NP1 e acrescenta objetos T-SQL, transações, concorrência, índices e proteção de senhas por hash.
 
 ## Tecnologias e ambiente
 
@@ -8,11 +10,9 @@ Sistema acadêmico de suporte técnico: usuários abrem e acompanham chamados, t
 - SQL Server Express, T-SQL e autenticação integrada do Windows.
 - Frontend HTML, CSS e JavaScript, sem framework ou etapa de build.
 - PowerShell 5.1 ou superior e **sqlcmd ODBC** para o setup.
-- Testes backend em executável .NET e frontend com módulos nativos do Node.js.
+- As validações anteriores utilizaram executáveis .NET e testes JavaScript em DOM simulado; seus arquivos não integram o pacote atual.
 
-Ambiente efetivamente validado: **Windows, PowerShell, SQL Server 2025 Express e runtime .NET/ASP.NET Core 9**. A compilação local utilizou SDK .NET `10.0.401`, com runtimes 9.0.14 instalados; o alvo permanece .NET 9. Use um SDK que reconheça soluções `.slnx`. Não há `global.json` fixando o SDK.
-
-O setup prevê adaptações para SQL Server 2019 e 2022, mas essas versões **não foram validadas integralmente**. A previsão no script não equivale a instalação homologada nesses ambientes.
+Ambiente efetivamente validado: **Windows, PowerShell, SQL Server 2025 Express e runtime .NET/ASP.NET Core 9**. Use um SDK que reconheça soluções `.slnx`. Não há `global.json` fixando o SDK.
 
 ## Estrutura
 
@@ -40,11 +40,13 @@ src_github/
     `-- styles/
 ```
 
+`database/` reúne a criação/população inicial, os objetos avançados e a validação. Em `api/`, Controllers definem as rotas, Services concentram as operações extraídas, Models representam as entidades, Data contém o contexto EF, DTOs e projeções, e Filters trata erros específicos. Migrations preserva o histórico, mas não substitui o setup. No frontend, `pages/` contém as sete páginas HTML, `scripts/` contém autenticação, requisições e scripts de cada página, e `styles/` reúne os estilos comuns e específicos.
+
 ## Pré-requisitos e SQL Server
 
 Instale o SQL Server Express pelo instalador oficial da Microsoft, com o mecanismo de banco e instância nomeada `SQLEXPRESS`. Habilite o acesso da conta Windows que executará o projeto. Instale o cliente sqlcmd ODBC e seu driver compatível; o setup não instala dependências. SSMS é opcional para inspeção.
 
-Instale o SDK .NET e o runtime ASP.NET Core 9 necessários à API. Para os testes frontend, foi utilizado Node.js `24.14.0`. Para o servidor estático sugerido abaixo, Python 3 é opcional (validado com 3.13.4); ele não é dependência da aplicação.
+Instale o SDK .NET e o runtime ASP.NET Core 9 necessários à API. O frontend não exige Python, Node.js, npm, framework, build ou servidor estático para abrir suas páginas. 
 
 A conexão padrão é `Server=.\SQLEXPRESS;Database=TechHelpSolutions;Trusted_Connection=True;TrustServerCertificate=True`. A conta Windows precisa de acesso ao servidor, `VIEW ANY DATABASE`, permissão de criação quando o banco estiver ausente e permissões para criar/alterar os objetos e ler os dados. A conta da API precisa executar consultas, escritas e procedures. Não use permissões administrativas como configuração de produção.
 
@@ -66,9 +68,9 @@ sqlcmd -S '.\SQLEXPRESS' -E -C -b -Q "SELECT SERVERPROPERTY('ProductVersion'), S
 
 Se a política local bloquear scripts, revise o arquivo e use uma sessão cuja política permita sua execução, conforme as regras do ambiente. Não é necessário alterar permanentemente a política da máquina.
 
-Na primeira execução, o setup verifica dependências, conexão Windows, versão, permissões e diretórios padrão. Adapta somente o provisionamento em um arquivo temporário, preservando `database/01_script.sql`; cria o banco e carrega estrutura e dados originais. Não usa migrations nem o antigo arquivo de schema (removido do pacote) para substituir essa carga.
+Na primeira execução, o setup verifica dependências, conexão Windows, versão, permissões e diretórios padrão. Adapta somente o provisionamento em um arquivo temporário, preservando `database/01_script.sql`; cria o banco e carrega estrutura e dados originais.
 
-Em banco existente, valida a estrutura e os registros minimos sem repetir a carga e verifica os metadados do formato PBKDF2 das senhas, sem regrava-las. A ferramenta de migracao legada foi retirada deste pacote. Senha em texto puro ou hash invalido interrompe o setup, sem alterar usuarios; uma migracao com backup deve ser realizada separadamente antes de continuar. Verificar o formato nao substitui testar o login.
+Em banco existente, valida a estrutura e os registros mínimos sem repetir a carga e verifica os metadados do formato PBKDF2 das senhas, sem regravá-las. Senha em texto puro ou hash invalido interrompe o setup, sem alterar usuarios; uma migração com backup deve ser realizada separadamente antes de continuar. Verificar o formato nao substitui testar o login.
 
 Instala/atualiza Function, Views, Procedures e Trigger e cria índices ausentes, verificando os objetos antes do commit. A ordem é validação original, verificacao do formato das senhas, `02_functions.sql`, `03_views.sql`, `04_procedures.sql`, `05_triggers.sql` e `06_indexes.sql`. `07_validacao.sql` contém as verificações da base original. Os seeds de senha do export e do modelo EF foram atualizados para hashes; estrutura, identidades e demais dados permanecem preservados.
 
@@ -95,151 +97,176 @@ O parâmetro `-Instance` do setup não altera a conexão da API.
 
 ## Iniciar o frontend
 
-Em outro terminal, sirva os arquivos estáticos com uma ferramenta já instalada. Com Python 3:
+1. Inicie a API pelo comando documentado acima e mantenha-a em execução.
+2. Acesse a pasta `src_github/frontend`.
+3. Abra a subpasta `pages` e localize `login.html`. O caminho atual é **`src_github/frontend/pages/login.html`**; não existe outro `login.html` na raiz de `frontend`.
+4. Dê um duplo clique nesse arquivo para abri-lo no navegador padrão.
+5. Utilize a interface a partir do login, com a API disponível.
 
-```powershell
-python -m http.server 5500 --bind 127.0.0.1 --directory frontend
-```
+As páginas usam somente HTML, CSS e JavaScript puro. Não é necessário iniciar um servidor específico para abri-las. `frontend/scripts/app.js` e `frontend/scripts/pages/cadastro.js` usam **`http://localhost:5266`** como endereço da API; mantenha essa porta no uso local. Em outro ambiente, ambos os endereços precisam ser ajustados de forma coerente.
 
-Abra `http://127.0.0.1:5500/pages/login.html`. Não há instalação npm nem build frontend. `frontend/scripts/app.js` e `frontend/scripts/pages/cadastro.js` usam **`http://localhost:5266`** como endereço da API; mantenha essa porta no uso local. Em outro ambiente, ambos os endereços precisam ser ajustados de forma coerente.
-
-O cadastro público cria somente `Usuario`. Contas existentes de técnico e gestor continuam com suas telas. O login encaminha `Usuario` ao painel do solicitante, `Tecnico` ao painel técnico e `Gestor`/`Admin` ao painel do gestor; a autorização efetiva permanece no backend.
+O cadastro público cria somente `Usuario`. Contas existentes de técnico e gestor continuam com suas telas. O login encaminha `Usuario` ao painel do solicitante, `Tecnico` ao painel técnico e `Gestor` ao painel do gestor; a autorização efetiva permanece no backend.
 
 ## Contas de demonstração
 
-Os seeds originais contêm `usuario@gmail.com` (Usuario), `tecnico@gmail.com` (Tecnico) e `gestor@gmail.com` (Admin, utilizado no painel do gestor). Solicite as credenciais de demonstração ao responsável pela entrega, por canal separado. Este README não publica senhas ou chaves JWT. Os testes dependem dos seeds originais; não altere suas credenciais para executar os testes.
+Os seeds originais contêm `usuario@gmail.com` (Usuario), `tecnico@gmail.com` (Tecnico) e `gestor@gmail.com` (Admin, utilizado no painel do gestor). 
 
-## Exemplos REST com PowerShell
+As credenciais de demonstração são padrão para todos os usuários: `Senha123`
 
-Com a API em execução, use `Invoke-RestMethod` no Windows PowerShell 5.1 ou superior. Execute os blocos na ordem, na mesma sessão. As credenciais abaixo são placeholders: substitua pelos dados de contas existentes com os perfis indicados. Não publique senhas ou os tokens retornados.
+## Exemplos práticos de chamadas REST
 
-**As operações POST, PUT e DELETE abaixo gravam no banco.** Execute-as somente em ambiente de teste e use exclusivamente o chamado criado neste roteiro, nunca os chamados originais. Os IDs de categoria/prioridade vêm das consultas e o ID do chamado vem da resposta de criação.
+Use Postman, Insomnia ou outra ferramenta HTTP com a API em execução em `http://localhost:5266`. Nas rotas protegidas, envie o cabeçalho `Authorization: Bearer <TOKEN>`, usando o campo `token` retornado pelo login. Para corpos JSON, utilize `Content-Type: application/json`.
 
-### Login e cabeçalho Bearer
+As credenciais abaixo são fictícias. Substitua `{id}` pelo ID retornado pela API; os IDs de categoria, prioridade e status devem vir dos catálogos. Operações de escrita devem usar somente registros de teste.
 
-O login recebe `email` e `senha`, retorna `token` e `usuario` com HTTP 200; credenciais inválidas retornam 401. Esta função autentica uma conta por vez e evita imprimir o JWT. A senha é convertida em texto apenas para montar o JSON exigido pela API; use o HTTP local documentado somente no ambiente acadêmico.
+### 1. Autenticação
 
-```powershell
-$ErrorActionPreference = 'Stop'
-$baseUrl = 'http://localhost:5266'
-function Get-ThsHeaders {
-    param([string]$Email)
-    $securePassword = Read-Host 'Senha da conta informada' -AsSecureString
-    $credential = New-Object System.Management.Automation.PSCredential($Email, $securePassword)
-    $body = @{ email = $Email; senha = $credential.GetNetworkCredential().Password } | ConvertTo-Json
-    $login = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/auth/login" -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body))
-    return @{ Authorization = "Bearer $($login.token)" }
-}
-$headersUsuario = Get-ThsHeaders -Email '<EMAIL_CONTA_USUARIO>'
-# Authorization enviado nas consultas: Bearer <TOKEN retornado pelo login>
-```
+`POST http://localhost:5266/api/auth/login` — público.
 
-### Catálogos e listagem — conta Usuario
-
-Os três catálogos exigem autenticação e retornam arrays `{ id, nome }` com HTTP 200. A listagem geral admite Usuario, Tecnico, Gestor e Admin; para Usuario retorna somente seus próprios chamados. Os filtros opcionais são `status`, `prioridade` e `categoria`; a ordenação é abertura decrescente.
-
-```powershell
-$categorias = @(Invoke-RestMethod -Method Get -Uri "$baseUrl/api/catalogos/categorias" -Headers $headersUsuario)
-$prioridades = @(Invoke-RestMethod -Method Get -Uri "$baseUrl/api/catalogos/prioridades" -Headers $headersUsuario)
-$status = @(Invoke-RestMethod -Method Get -Uri "$baseUrl/api/catalogos/status" -Headers $headersUsuario)
-$categorias | Format-Table id, nome
-$prioridades | Format-Table id, nome
-$status | Format-Table id, nome
-Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados" -Headers $headersUsuario
-if (!$categorias.Count -or !$prioridades.Count) { throw 'Catálogos necessários estão vazios.' }
-$categoriaId = [int]$categorias[0].id
-$prioridadeId = [int]$prioridades[0].id
-Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados?categoria=$categoriaId&prioridade=$prioridadeId" -Headers $headersUsuario
-```
-
-### Criar, consultar e atualizar o chamado de teste
-
-Somente Usuario pode criar. O solicitante é obtido do JWT; não é necessário enviar `usuarioId`, pois o controller sobrescreve esse campo. Criação e atualização retornam HTTP **200**, não 201. A atualização aceita Usuario (somente chamado próprio) ou Tecnico. A consulta por ID exige autenticação; Usuario só acessa o próprio chamado.
-
-```powershell
-$body = @{
-    titulo = 'Teste REST NP2'
-    descricao = 'Chamado temporário para verificar o CRUD.'
-    categoriaId = $categoriaId
-    prioridadeId = $prioridadeId
-} | ConvertTo-Json
-$chamado = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/chamados" -Headers $headersUsuario -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body))
-$chamadoId = [int]$chamado.id
-if ($chamadoId -le 0) { throw 'Criação não retornou um ID válido; interrompa o roteiro.' }
-Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados/$chamadoId" -Headers $headersUsuario
-
-$body = @{
-    titulo = 'Teste REST NP2 atualizado'
-    descricao = 'Atualização do chamado temporário.'
-    categoriaId = $categoriaId
-    prioridadeId = $prioridadeId
-} | ConvertTo-Json
-Invoke-RestMethod -Method Put -Uri "$baseUrl/api/chamados/$chamadoId" -Headers $headersUsuario -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body))
-```
-
-### Enviar e consultar comentários
-
-Ambos exigem autenticação; Usuario só comenta e consulta comentários de seus chamados. POST recebe somente `mensagem` e retorna HTTP 200 com o comentário e resumo público do autor. GET retorna HTTP 200 com os comentários em ordem de envio.
-
-```powershell
-$body = @{ mensagem = 'Comentário de teste REST.' } | ConvertTo-Json
-Invoke-RestMethod -Method Post -Uri "$baseUrl/api/chamados/$chamadoId/comentarios" -Headers $headersUsuario -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes($body))
-Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados/$chamadoId/comentarios" -Headers $headersUsuario
-```
-
-### Assumir e finalizar — conta Tecnico
-
-Use uma conta Tecnico existente. Ambas as operações são PUT **sem corpo** e retornam HTTP 204, sem JSON. Finalizar exige que o chamado esteja atribuído ao técnico autenticado. Não troque `$chamadoId` por um ID original.
-
-```powershell
-$headersTecnico = Get-ThsHeaders -Email '<EMAIL_CONTA_TECNICO>'
-Invoke-RestMethod -Method Put -Uri "$baseUrl/api/chamados/$chamadoId/assumir" -Headers $headersTecnico
-Invoke-RestMethod -Method Put -Uri "$baseUrl/api/chamados/$chamadoId/finalizar" -Headers $headersTecnico
-Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados/$chamadoId" -Headers $headersTecnico
-```
-
-### Excluir — conta Admin
-
-Somente o perfil literal Admin pode excluir; Gestor não recebe essa permissão pelo nome do perfil. A API remove também os comentários associados conforme sua implementação existente. DELETE retorna HTTP 204 sem corpo.
-
-```powershell
-$headersAdmin = Get-ThsHeaders -Email '<EMAIL_CONTA_ADMIN>'
-if ((Read-Host "Excluir o chamado de teste #$chamadoId? Digite EXCLUIR") -ceq 'EXCLUIR') {
-    Invoke-RestMethod -Method Delete -Uri "$baseUrl/api/chamados/$chamadoId" -Headers $headersAdmin
+Corpo:
+```json
+{
+  "email": "usuario@exemplo.com",
+  "senha": "senha"
 }
 ```
 
-### Conferir respostas e falhas
+Retorna 200 com o token e o resumo do usuário; credenciais inválidas retornam 401.
 
-Além dos sucessos descritos, chamadas autenticadas podem retornar 401 (token ausente/inválido/expirado) ou 403 (perfil ou propriedade sem permissão). Operações por ID retornam 404 para chamado ausente. Atualização pode retornar 400 por campos inválidos; finalização sem responsável retorna 400 e por outro técnico, 403. Assumir/finalizar podem retornar 409 por conflito concorrente e 400 por violação de integridade das datas. Outras falhas de banco não são uniformemente convertidas em 400.
+### 2. Usuários
 
-No PowerShell 5.1, `Invoke-RestMethod` lança exceção para respostas HTTP de erro. Este exemplo consulta o ID obtido neste roteiro e imprime somente o código, sem expor o corpo interno de erro. **Após confirmar a exclusão**, o esperado é 404; caso a exclusão tenha sido cancelada, o GET continua retornando o chamado com 200.
+`POST http://localhost:5266/api/usuarios` — cadastro público, somente perfil Usuario.
 
-```powershell
-try {
-    Invoke-RestMethod -Method Get -Uri "$baseUrl/api/chamados/$chamadoId" -Headers $headersAdmin
-} catch {
-    if ($null -ne $_.Exception.Response) {
-        Write-Host ('HTTP {0}' -f [int]$_.Exception.Response.StatusCode)
-    } else {
-        Write-Host 'Falha de conexão com a API.'
-    }
+Corpo:
+```json
+{
+  "nome": "Usuário de teste",
+  "email": "usuario@exemplo.com",
+  "senha": "senha-de-teste",
+  "tipo": "Usuario"
 }
 ```
 
-Os exemplos foram conferidos estaticamente contra controllers/DTOs e pelo parser PowerShell; as escritas deste roteiro não foram executadas durante sua elaboração. Os conjuntos automatizados da seção seguinte oferecem verificações reproduzíveis de códigos HTTP, autorização e concorrência.
+`GET http://localhost:5266/api/usuarios` — listar usuários; exige JWT.
 
-## Verificacoes da entrega
+`GET http://localhost:5266/api/usuarios/me` — consultar a própria conta; exige JWT.
 
-Os testes automatizados e suas evidencias foram removidos deste pacote. Os resultados historicos foram 63 grupos backend, dez grupos adicionais de senhas e 39 testes frontend aprovados; as suites nao podem ser reexecutadas sem seus arquivos. Preserve esses materiais separadamente para a documentacao. Testes visuais em navegador continuam distintos das verificacoes automatizadas.
+`PUT http://localhost:5266/api/usuarios/{id}` — atualizar a própria conta; Admin pode atualizar outras contas. Usuários comuns não podem trocar de perfil.
 
-Os exemplos REST acima permitem uma conferencia manual, respeitando perfis e usando somente chamados temporarios para escritas. Para conferir a sintaxe JavaScript, com Node.js instalado:
-
-```powershell
-Get-ChildItem frontend/scripts -Recurse -Filter '*.js' | ForEach-Object { node --check $_.FullName; if ($LASTEXITCODE -ne 0) { throw "Erro de sintaxe: $($_.FullName)" } }
+Corpo (senha opcional; omitida ou nula preserva a senha atual):
+```json
+{
+  "nome": "Usuário atualizado",
+  "email": "usuario@exemplo.com",
+  "senha": null,
+  "tipo": "Usuario"
+}
 ```
 
-As medicoes historicas de indices nao demonstraram ganho liquido de desempenho. Preserve planos e relatorios separadamente para a documentacao; nao remova indices para reproduzir uma linha de base antiga.
+`DELETE http://localhost:5266/api/usuarios/{id}` — somente Admin; conta sem chamados ou comentários vinculados.
+
+### 3. Chamados
+
+`GET http://localhost:5266/api/chamados` — exige JWT; Usuario vê apenas os próprios chamados. Tecnico, Gestor e Admin têm a listagem geral.
+
+`GET http://localhost:5266/api/chamados?status={statusId}&prioridade={prioridadeId}&categoria={categoriaId}` — mesmos perfis, com filtros opcionais.
+
+`GET http://localhost:5266/api/chamados/meus` — somente Usuario.
+
+`GET http://localhost:5266/api/chamados/meus-atendimentos` — somente Tecnico.
+
+`GET http://localhost:5266/api/chamados/{id}` — detalhe; Usuario acessa apenas chamado próprio.
+
+`POST http://localhost:5266/api/chamados` — somente Usuario; o solicitante é identificado pelo JWT.
+
+Corpo:
+```json
+{
+  "titulo": "Problema no computador",
+  "descricao": "O computador não está ligando.",
+  "categoriaId": 1,
+  "prioridadeId": 1
+}
+```
+
+`PUT http://localhost:5266/api/chamados/{id}` — Usuario no próprio chamado ou Tecnico.
+
+Corpo:
+```json
+{
+  "titulo": "Problema no computador atualizado",
+  "descricao": "O problema continua após verificar a tomada.",
+  "categoriaId": 1,
+  "prioridadeId": 1
+}
+```
+
+Os números acima são ilustrativos: consulte os catálogos antes de enviá-los.
+
+`PUT http://localhost:5266/api/chamados/{id}/status` — somente Tecnico.
+
+Corpo:
+```json
+{
+  "statusId": 2
+}
+```
+
+`PUT http://localhost:5266/api/chamados/{id}/assumir` — somente Tecnico; sem corpo.
+
+`PUT http://localhost:5266/api/chamados/{id}/finalizar` — somente o técnico responsável; sem corpo.
+
+`DELETE http://localhost:5266/api/chamados/{id}` — somente Admin; sem corpo. Remove também os comentários associados.
+
+### 4. Comentários
+
+`GET http://localhost:5266/api/chamados/{id}/comentarios` — exige JWT; Usuario acessa apenas chamado próprio.
+
+`POST http://localhost:5266/api/chamados/{id}/comentarios` — mesma restrição; o autor vem do JWT.
+
+Corpo:
+```json
+{
+  "mensagem": "O problema continua após reiniciar."
+}
+```
+
+### 5. Catálogos
+
+As consultas exigem JWT:
+
+- `GET http://localhost:5266/api/catalogos/categorias`
+- `GET http://localhost:5266/api/catalogos/prioridades`
+- `GET http://localhost:5266/api/catalogos/status`
+
+As escritas dos três catálogos exigem **Admin**; Gestor não possui essa permissão:
+
+- `POST http://localhost:5266/api/catalogos/categorias`
+- `PUT http://localhost:5266/api/catalogos/categorias/{id}`
+- `DELETE http://localhost:5266/api/catalogos/categorias/{id}`
+- `POST http://localhost:5266/api/catalogos/prioridades`
+- `PUT http://localhost:5266/api/catalogos/prioridades/{id}`
+- `DELETE http://localhost:5266/api/catalogos/prioridades/{id}`
+- `POST http://localhost:5266/api/catalogos/status`
+- `PUT http://localhost:5266/api/catalogos/status/{id}`
+- `DELETE http://localhost:5266/api/catalogos/status/{id}`
+
+Corpo para POST e PUT (DELETE não recebe corpo):
+```json
+{
+  "nome": "Item de teste"
+}
+```
+
+Nome ausente, vazio ou somente espaços retorna 400; nomes válidos são aparados nas extremidades. Use apenas itens novos de teste, sem renomear os status utilizados pelas regras atuais.
+
+### Conferir os resultados
+
+Criação, consulta e atualização de usuários/catálogos/chamados retornam 200, assim como o envio de comentários. Alterar status, assumir, finalizar e excluir retornam 204 sem corpo.
+
+Para testar falhas: token ausente/inválido retorna 401; perfil ou acesso sem permissão, 403; ID inexistente nas operações por ID, 404. Campos inválidos podem retornar 400; conflitos concorrentes ao assumir/finalizar retornam 409.
+
+A exclusão de usuário com chamados como solicitante/técnico ou comentários como autor retorna 409. A exclusão de catálogo vinculado a chamado também retorna 409. Essas operações protegem a verificação de vínculos e a exclusão na mesma transação, impedindo cascatas concorrentes; conflitos de integridade reconhecidos retornam mensagens fixas, sem detalhes SQL.
 
 ## Objetos SQL implementados
 
@@ -251,12 +278,8 @@ As medicoes historicas de indices nao demonstraram ganho liquido de desempenho. 
 
 ## Limitações e segurança
 
-Senhas são armazenadas em PBKDF2-HMAC-SHA256, com 600.000 iterações, salt aleatório de 16 bytes e derivação de 32 bytes. O formato versionado registra algoritmo, custo, salt e derivação; o login compara em tempo constante e rejeita texto puro e formatos inválidos. O serviço identifica hashes que precisam de atualização futura; não há fallback de login legado. Credenciais de demonstração permanecem as mesmas, sem serem publicadas aqui.
+Senhas são armazenadas em PBKDF2-HMAC-SHA256, com 600.000 iterações, salt aleatório de 16 bytes e derivação de 32 bytes. O formato versionado registra algoritmo, custo, salt e derivação; o login compara em tempo constante e rejeita texto puro e formatos inválidos. O serviço identifica hashes que precisam de atualização futura; não há fallback de login legado.
 
-Este é um ambiente acadêmico de desenvolvimento, não uma configuração pronta para produção. Persistem chave JWT fixa no código, CORS aberto, HTTP local e aceitação do certificado SQL por `TrustServerCertificate=True`. O frontend guarda o token no armazenamento local. Não exponha a aplicação nem as contas de demonstração à internet. As fixtures contêm credenciais de teste e exigem revisão antes de qualquer publicação. Backups anteriores à conversão contêm senhas legadas: mantenha-os sob acesso restrito fora do pacote de entrega e descarte-os conforme a política de retenção após validar a recuperação.
+Este é um ambiente acadêmico de desenvolvimento, não uma configuração pronta para produção. Persistem chave JWT fixa no código, CORS aberto, HTTP local e aceitação do certificado SQL por `TrustServerCertificate=True`. O frontend guarda o token no armazenamento local. 
 
-A ferramenta de migracao, as evidencias e os baselines historicos foram removidos do pacote. Mantenha esses materiais e o backup em arquivo separado e restrito. O setup atual nao executa a migracao antiga.
-
-A proteção contra XSS usa APIs seguras do DOM; cadastro privilegiado e autoelevação são bloqueados no servidor, assim como a listagem de chamados de terceiros para `Usuario`. Essas correções não eliminam as limitações anteriores de autenticação e implantação. Os testes exigem SQL Server real e permissões específicas; não há provisionamento automático de dependências.
-
-`api/DOCUMENTACAO_TECNICA_BACKEND.md` é um registro histórico da NP1 e não deve integrar o pacote final como descrição atual. A documentação oficial e a apresentação NP2 serão preparadas separadamente. Antes de empacotar, exclua da seleção do ZIP os diretórios `bin/`, `obj/`, caches de IDE e arquivos `*.csproj.user`; preserve fontes e scripts; mantenha testes e evidencias historicas em arquivo separado. Não inclua configurações pessoais, tokens ou segredos locais.
+A proteção contra XSS usa APIs seguras do DOM; cadastro privilegiado e autoelevação são bloqueados no servidor, assim como a listagem de chamados de terceiros para `Usuario`. 

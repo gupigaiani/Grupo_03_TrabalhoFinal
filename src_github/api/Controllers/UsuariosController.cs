@@ -128,6 +128,25 @@ public class UsuariosController : ControllerBase
         return Ok(ProjetarUsuario(usuario));
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Excluir(int id, [FromServices] AdministracaoService service)
+    {
+        try
+        {
+            return await service.ExcluirUsuario(id) switch
+            {
+                ResultadoExclusao.Sucesso => NoContent(),
+                ResultadoExclusao.NaoEncontrado => NotFound(),
+                _ => Conflict("Usuário possui chamados ou comentários vinculados e não pode ser excluído.")
+            };
+        }
+        catch (DbUpdateException ex) when (AdministracaoService.ConflitoIntegridade(ex))
+        {
+            return Conflict("Não foi possível excluir o usuário devido a vínculos existentes.");
+        }
+    }
+
     private int? ObterUsuarioIdLogado()
     {
         var userId = User.FindFirstValue("UserId");
