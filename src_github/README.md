@@ -4,6 +4,27 @@ Sistema acadêmico de suporte técnico para registrar problemas, organizar atend
 
 A API oferece CRUD de chamados, cadastro/consulta/atualização/exclusão de usuários conforme suas permissões e manutenção administrativa dos catálogos. Comentários podem ser criados e consultados; não há edição ou exclusão individual pela interface. A NP2 preserva a base da NP1 e acrescenta objetos T-SQL, transações, concorrência, índices e proteção de senhas por hash.
 
+## Início rápido
+
+1. Instale os pré-requisitos descritos abaixo e confirme que o serviço **SQL Server (SQLEXPRESS)** está em execução.
+2. Abra o PowerShell na pasta extraída `Grupo_03_TrabalhoFinal` e entre na pasta do código:
+
+   ```powershell
+   cd .\src_github
+   ```
+
+3. Execute `.\setup_database.ps1` e aguarde a mensagem de inicialização concluída ou de banco já inicializado e validado.
+4. Nesse mesmo PowerShell, inicie a API:
+
+   ```powershell
+   dotnet run --project api/UsuariosApi.csproj --launch-profile http
+   ```
+
+5. Mantenha esse terminal aberto. Confirme a mensagem `Now listening on: http://localhost:5266` e abra `http://localhost:5266/swagger` para conferir a disponibilidade da API.
+6. No Explorador de Arquivos, abra `frontend/pages/login.html` com um duplo clique e entre com uma das contas de demonstração listadas adiante.
+
+Para encerrar a API, pressione **Ctrl+C** no terminal. Para utilizá-la novamente, basta iniciá-la pelo comando acima; não é necessário repetir o setup a cada acesso. Se o projeto estiver em outra pasta, abra o PowerShell nela antes de executar `cd .\src_github`.
+
 ## Tecnologias e ambiente
 
 - API ASP.NET Core, alvo `net9.0`, Entity Framework Core 9 e JWT Bearer.
@@ -12,32 +33,35 @@ A API oferece CRUD de chamados, cadastro/consulta/atualização/exclusão de usu
 - PowerShell 5.1 ou superior e **sqlcmd ODBC** para o setup.
 - As validações anteriores utilizaram executáveis .NET e testes JavaScript em DOM simulado; seus arquivos não integram o pacote atual.
 
-Ambiente efetivamente validado: **Windows, PowerShell, SQL Server 2025 Express e runtime .NET/ASP.NET Core 9**. Use um SDK que reconheça soluções `.slnx`. Não há `global.json` fixando o SDK.
+Ambiente efetivamente validado: **Windows, PowerShell, SQL Server 2025 Express e runtime .NET/ASP.NET Core 9**. A compilação anterior utilizou o SDK .NET **10.0.401**, com runtimes .NET/ASP.NET Core **9.0.14** instalados; o projeto continua direcionado a `net9.0`. Para usar a solução `.slnx`, é necessário um SDK compatível com esse formato. Não há `global.json` fixando o SDK. Se o SDK não reconhecer a solução, use os comandos pelo `.csproj` apresentados abaixo.
 
 ## Estrutura
 
 ```text
-src_github/
-|-- README.md
-|-- setup_database.ps1
-|-- database/
-|   |-- 01_script.sql
-|   |-- 02_functions.sql
-|   |-- 03_views.sql
-|   |-- 04_procedures.sql
-|   |-- 05_triggers.sql
-|   |-- 06_indexes.sql
-|   `-- 07_validacao.sql
-|-- api/
-|   |-- UsuariosApi.slnx
-|   |-- UsuariosApi.csproj
-|   |-- Controllers/, Services/, Models/, Data/, Filters/
-|   |-- Migrations/
-|   `-- Properties/launchSettings.json
-`-- frontend/
-    |-- pages/
-    |-- scripts/
-    `-- styles/
+Grupo_03_TrabalhoFinal/
+|-- Documentacao_Projeto.pdf
+|-- Apresentacao_Projeto.pdf
+`-- src_github/
+    |-- README.md
+    |-- setup_database.ps1
+    |-- database/
+    |   |-- 01_script.sql
+    |   |-- 02_functions.sql
+    |   |-- 03_views.sql
+    |   |-- 04_procedures.sql
+    |   |-- 05_triggers.sql
+    |   |-- 06_indexes.sql
+    |   `-- 07_validacao.sql
+    |-- api/
+    |   |-- UsuariosApi.slnx
+    |   |-- UsuariosApi.csproj
+    |   |-- Controllers/, Services/, Models/, Data/, Filters/
+    |   |-- Migrations/
+    |   `-- Properties/launchSettings.json
+    `-- frontend/
+        |-- pages/
+        |-- scripts/
+        `-- styles/
 ```
 
 `database/` reúne a criação/população inicial, os objetos avançados e a validação. Em `api/`, Controllers definem as rotas, Services concentram as operações extraídas, Models representam as entidades, Data contém o contexto EF, DTOs e projeções, e Filters trata erros específicos. Migrations preserva o histórico, mas não substitui o setup. No frontend, `pages/` contém as sete páginas HTML, `scripts/` contém autenticação, requisições e scripts de cada página, e `styles/` reúne os estilos comuns e específicos.
@@ -85,6 +109,16 @@ dotnet build api/UsuariosApi.slnx --no-restore
 dotnet run --project api/UsuariosApi.csproj --launch-profile http
 ```
 
+Alternativa para compilar diretamente o projeto, sem depender do reconhecimento de `.slnx`:
+
+```powershell
+dotnet restore api/UsuariosApi.csproj
+dotnet build api/UsuariosApi.csproj --no-restore
+dotnet run --project api/UsuariosApi.csproj --launch-profile http
+```
+
+O restore precisa acessar o NuGet para baixar os pacotes caso eles ainda não estejam no cache local. Instalar apenas o runtime não fornece os comandos de compilação: é necessário o SDK.
+
 A API escuta em **`http://localhost:5266`**. O perfil `http` ativa `Development`; Swagger fica em `http://localhost:5266/swagger`. O frontend não é servido pela API. Iniciar a API não cria o banco nem aplica migrations.
 
 Para outra instância, configure a conexão na sessão antes de iniciar a API:
@@ -105,13 +139,34 @@ O parâmetro `-Instance` do setup não altera a conexão da API.
 
 As páginas usam somente HTML, CSS e JavaScript puro. Não é necessário iniciar um servidor específico para abri-las. `frontend/scripts/app.js` e `frontend/scripts/pages/cadastro.js` usam **`http://localhost:5266`** como endereço da API; mantenha essa porta no uso local. Em outro ambiente, ambos os endereços precisam ser ajustados de forma coerente.
 
-O cadastro público cria somente `Usuario`. Contas existentes de técnico e gestor continuam com suas telas. O login encaminha `Usuario` ao painel do solicitante, `Tecnico` ao painel técnico e `Gestor` ao painel do gestor; a autorização efetiva permanece no backend.
+O cadastro público cria somente `Usuario`. Contas existentes de técnico e gestor continuam com suas telas. O login encaminha `Usuario` ao painel do solicitante, `Tecnico` ao painel técnico e `Gestor`/`Admin` ao painel do gestor; a autorização efetiva permanece no backend. O perfil literal Gestor não recebe as permissões administrativas de Admin.
+
+Pela interface é possível cadastrar uma conta comum, trabalhar com chamados e comentários e consultar os painéis conforme o perfil. A exclusão de chamados aparece somente para Admin. A manutenção dos catálogos, a alteração de perfil e a atualização/exclusão de usuários são operações da API: utilize Postman, Insomnia ou outra ferramenta REST, conforme os exemplos abaixo. Não existem telas específicas para essas operações administrativas.
 
 ## Contas de demonstração
 
 Os seeds originais contêm `usuario@gmail.com` (Usuario), `tecnico@gmail.com` (Tecnico) e `gestor@gmail.com` (Admin, utilizado no painel do gestor). 
 
-As credenciais de demonstração são padrão para todos os usuários: `Senha123`
+A senha inicial das **três contas de demonstração acima** é `Senha123`. Isso não se aplica a novas contas: elas utilizam a senha escolhida no cadastro. Se a senha de uma conta inicial tiver sido alterada, use o valor atualizado.
+
+## Problemas comuns
+
+| Sintoma | O que conferir |
+|---|---|
+| `dotnet` não reconhecido | Instale o SDK .NET e abra novamente o PowerShell. Confira com `dotnet --info`. |
+| API solicita instalação do runtime 9 | Confira `dotnet --list-runtimes`: a aplicação precisa dos runtimes .NET e ASP.NET Core 9, mesmo quando a compilação usa um SDK mais recente. |
+| Solução `.slnx` não reconhecida | Use a alternativa pelo `.csproj` ou um SDK compatível com `.slnx`. |
+| `sqlcmd` não reconhecido | Instale/configure o cliente sqlcmd ODBC e seu driver; reabra o terminal e confira com `Get-Command sqlcmd`. |
+| Instância não encontrada ou conexão recusada | Abra o aplicativo Serviços do Windows e confira **SQL Server (SQLEXPRESS)**. Se a instância tiver outro nome, informe-o no setup e na conexão da API. |
+| Falha de login Windows ou permissão negada | A conexão usa a conta Windows que iniciou o processo. Solicite ao administrador do SQL Server as permissões necessárias; trocar somente o perfil da aplicação não concede acesso ao banco. |
+| PowerShell bloqueia o arquivo `.ps1` | Revise o arquivo e a política do ambiente. Em computador pessoal que permita essa execução, pode-se usar `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` na sessão atual; políticas da organização podem impedir essa alteração. Arquivos baixados também podem exigir desbloqueio nas Propriedades após revisão. |
+| `Address already in use` na porta 5266 | Confira se a API já está aberta em outro terminal. Reutilize essa execução ou encerre-a com Ctrl+C antes de iniciar outra. O frontend espera a porta 5266. |
+| Frontend não carrega os dados | Verifique se a API continua executando e se o Swagger abre. Confira `http://localhost:5266` e a conexão SQL da API. Em caso de erro no navegador, examine Console e Network para identificar a requisição que falhou. |
+| HTTP 401 | Faça login novamente; o token pode estar ausente, inválido ou expirado. Depois de mudar um perfil, obtenha um novo token. |
+| HTTP 403 | A conta está autenticada, mas não tem o perfil ou a permissão exigidos para a operação ou para aquele chamado. Use uma conta autorizada. |
+| Setup informa instalação parcial ou senha legada | Interrompa e investigue a mensagem. Não apague o banco nem reaplique seeds manualmente. A migração de senhas legadas não integra o pacote atual. |
+
+O Swagger está disponível no ambiente Development utilizado pelo perfil `http`. Uma resposta 404 em `http://localhost:5266/` não indica, por si só, falha: a API não possui página inicial nessa URL.
 
 ## Exemplos práticos de chamadas REST
 
@@ -162,6 +217,19 @@ Corpo (senha opcional; omitida ou nula preserva a senha atual):
   "tipo": "Usuario"
 }
 ```
+
+**Como atribuir o perfil Admin:** cadastre a nova conta como Usuario e faça login com um administrador existente, como a conta de demonstração `gestor@gmail.com`. Envie o PUT acima para o ID da conta que deseja promover, utilizando o JWT do administrador e o seguinte corpo:
+
+```json
+{
+  "nome": "Nome do usuário",
+  "email": "novo.admin@exemplo.com",
+  "senha": null,
+  "tipo": "Admin"
+}
+```
+
+Informe o nome e o e-mail corretos da conta, pois também serão atualizados; `senha: null` mantém a senha atual. Após o retorno HTTP 200, faça login novamente com a conta promovida para obter um JWT com a role Admin. O cadastro público não permite criar Admin diretamente, e uma conta sem esse privilégio não pode promover a si mesma.
 
 `DELETE http://localhost:5266/api/usuarios/{id}` — somente Admin; conta sem chamados ou comentários vinculados.
 
