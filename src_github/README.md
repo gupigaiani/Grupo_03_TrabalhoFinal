@@ -70,7 +70,15 @@ Grupo_03_TrabalhoFinal/
 
 Instale o SQL Server Express pelo instalador oficial da Microsoft, com o mecanismo de banco e instância nomeada `SQLEXPRESS`. Habilite o acesso da conta Windows que executará o projeto. Instale o cliente sqlcmd ODBC e seu driver compatível; o setup não instala dependências. SSMS é opcional para inspeção.
 
-Instale o SDK .NET e o runtime ASP.NET Core 9 necessários à API. O frontend não exige Python, Node.js, npm, framework, build ou servidor estático para abrir suas páginas. 
+Instale o SDK .NET e o runtime ASP.NET Core 9 necessários à API. O frontend não exige Python, Node.js, npm, framework, build ou servidor estático.
+
+Links oficiais de instalação:
+
+- [.NET 9 — SDK e runtimes](https://dotnet.microsoft.com/en-us/download/dotnet/9.0): instale o SDK para compilar e executar.
+- [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads): selecione a edição Express; o ambiente validado utiliza SQL Server 2025.
+- [sqlcmd ODBC](https://learn.microsoft.com/en-us/sql/tools/sqlcmd/sqlcmd-download-install): siga a seção da versão ODBC utilizada pelo setup.
+- [Microsoft ODBC Driver para SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server): driver necessário ao cliente sqlcmd.
+- [SQL Server Management Studio — opcional](https://learn.microsoft.com/en-us/ssms/install/install): ferramenta de administração; não substitui o mecanismo SQL Server.
 
 A conexão padrão é `Server=.\SQLEXPRESS;Database=TechHelpSolutions;Trusted_Connection=True;TrustServerCertificate=True`. A conta Windows precisa de acesso ao servidor, `VIEW ANY DATABASE`, permissão de criação quando o banco estiver ausente e permissões para criar/alterar os objetos e ler os dados. A conta da API precisa executar consultas, escritas e procedures. Não use permissões administrativas como configuração de produção.
 
@@ -90,7 +98,13 @@ sqlcmd -S '.\SQLEXPRESS' -E -C -b -Q "SELECT SERVERPROPERTY('ProductVersion'), S
 .\setup_database.ps1 -Instance 'SERVIDOR\INSTANCIA'
 ```
 
-Se a política local bloquear scripts, revise o arquivo e use uma sessão cuja política permita sua execução, conforme as regras do ambiente. Não é necessário alterar permanentemente a política da máquina.
+Se o erro indicar bloqueio da execução de scripts pela política do PowerShell, revise o arquivo e abra uma nova sessão com:
+
+```powershell
+PowerShell -ExecutionPolicy Bypass
+```
+
+Na nova sessão, entre na pasta `src_github`, se necessário, e execute novamente `.\setup_database.ps1`. O parâmetro vale somente para esse processo, sem alterar permanentemente a política da máquina; políticas da organização podem prevalecer. Ele não corrige erros de conexão, permissões SQL ou dependências ausentes.
 
 Na primeira execução, o setup verifica dependências, conexão Windows, versão, permissões e diretórios padrão. Adapta somente o provisionamento em um arquivo temporário, preservando `database/01_script.sql`; cria o banco e carrega estrutura e dados originais.
 
@@ -145,9 +159,16 @@ Pela interface é possível cadastrar uma conta comum, trabalhar com chamados e 
 
 ## Contas de demonstração
 
-Os seeds originais contêm `usuario@gmail.com` (Usuario), `tecnico@gmail.com` (Tecnico) e `gestor@gmail.com` (Admin, utilizado no painel do gestor). 
+Os dados iniciais incluem quatro contas:
 
-A senha inicial das **três contas de demonstração acima** é `Senha123`. Isso não se aplica a novas contas: elas utilizam a senha escolhida no cadastro. Se a senha de uma conta inicial tiver sido alterada, use o valor atualizado.
+| E-mail | Perfil |
+|---|---|
+| `usuario@gmail.com` | Usuario |
+| `tecnico@gmail.com` | Tecnico |
+| `gestor@gmail.com` | Gestor |
+| `admin@gmail.com` | Admin |
+
+A senha inicial das **quatro contas de demonstração acima** é `Senha123`, armazenada como hash PBKDF2. Novas contas usam a senha escolhida no cadastro. Se a senha de uma conta inicial tiver sido alterada, use o valor atualizado.
 
 ## Problemas comuns
 
@@ -159,7 +180,7 @@ A senha inicial das **três contas de demonstração acima** é `Senha123`. Isso
 | `sqlcmd` não reconhecido | Instale/configure o cliente sqlcmd ODBC e seu driver; reabra o terminal e confira com `Get-Command sqlcmd`. |
 | Instância não encontrada ou conexão recusada | Abra o aplicativo Serviços do Windows e confira **SQL Server (SQLEXPRESS)**. Se a instância tiver outro nome, informe-o no setup e na conexão da API. |
 | Falha de login Windows ou permissão negada | A conexão usa a conta Windows que iniciou o processo. Solicite ao administrador do SQL Server as permissões necessárias; trocar somente o perfil da aplicação não concede acesso ao banco. |
-| PowerShell bloqueia o arquivo `.ps1` | Revise o arquivo e a política do ambiente. Em computador pessoal que permita essa execução, pode-se usar `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` na sessão atual; políticas da organização podem impedir essa alteração. Arquivos baixados também podem exigir desbloqueio nas Propriedades após revisão. |
+| PowerShell bloqueia o arquivo `.ps1` | Após revisar o arquivo, abra uma sessão com `PowerShell -ExecutionPolicy Bypass` e execute o setup novamente. Isso não corrige falhas de conexão ou permissões SQL; políticas da organização podem prevalecer. |
 | `Address already in use` na porta 5266 | Confira se a API já está aberta em outro terminal. Reutilize essa execução ou encerre-a com Ctrl+C antes de iniciar outra. O frontend espera a porta 5266. |
 | Frontend não carrega os dados | Verifique se a API continua executando e se o Swagger abre. Confira `http://localhost:5266` e a conexão SQL da API. Em caso de erro no navegador, examine Console e Network para identificar a requisição que falhou. |
 | HTTP 401 | Faça login novamente; o token pode estar ausente, inválido ou expirado. Depois de mudar um perfil, obtenha um novo token. |
@@ -218,7 +239,7 @@ Corpo (senha opcional; omitida ou nula preserva a senha atual):
 }
 ```
 
-**Como atribuir o perfil Admin:** cadastre a nova conta como Usuario e faça login com um administrador existente, como a conta de demonstração `gestor@gmail.com`. Envie o PUT acima para o ID da conta que deseja promover, utilizando o JWT do administrador e o seguinte corpo:
+**Como atribuir o perfil Admin:** cadastre a nova conta como Usuario e faça login com um administrador existente, como a conta de demonstração `admin@gmail.com`. Envie o PUT acima para o ID da conta que deseja promover, utilizando o JWT do administrador e o seguinte corpo:
 
 ```json
 {

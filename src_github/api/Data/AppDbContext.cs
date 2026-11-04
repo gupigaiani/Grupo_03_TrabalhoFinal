@@ -32,7 +32,8 @@ namespace TechHelpSolutions.Data
             modelBuilder.Entity<Usuario>().HasData(
                 new { Id = 1, Nome = "João da Silva", Email = "usuario@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$Qjrq0hZpiJdV2fv3hvqeTg==$XaMInIG/McJT0t3IG9BNi0mHCkBFs9CTNtlHstxjm8A=", Tipo = "Usuario", DataCriacao = new DateTime(2026, 10, 27, 9, 31, 35).AddTicks(2929494) },
                 new { Id = 2, Nome = "Gabriel Costa", Email = "tecnico@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$K+TsNXKCgbezgPQ3FR/BRw==$NoBvmFs8ZuGcS8QMJb7/dU+rkfrjfs+cDL+bli3HbT0=", Tipo = "Tecnico", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 2).AddTicks(6711620) },
-                new { Id = 3, Nome = "Luiz Silveira", Email = "gestor@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", Tipo = "Admin", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 31).AddTicks(6671228) }
+                new { Id = 3, Nome = "Luiz Silveira", Email = "gestor@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", Tipo = "Gestor", DataCriacao = new DateTime(2026, 10, 27, 9, 32, 31).AddTicks(6671228) },
+                new { Id = 4, Nome = "Fernando Campos", Email = "admin@gmail.com", Senha = "THS$1$PBKDF2-SHA256$600000$NGeL5tolc85bk6iei7E0AQ==$uFqiawfFwA/6U5GPP05mqy/uSDVnNNE/vZoWyaz/tKQ=", Tipo = "Admin", DataCriacao = new DateTime(2026, 10, 27, 9, 33, 0) }
             );
 
             modelBuilder.Entity<Chamado>().HasData(
@@ -67,7 +68,7 @@ namespace TechHelpSolutions.Data
 
             modelBuilder.Entity<Comentario>().HasData(
                 new { Id = 1, ChamadoId = 1, UsuarioId = 2, Mensagem = "Olá João!", DataEnvio = new DateTime(2026, 10, 27, 9, 38, 19).AddTicks(7631189) },
-                new { Id = 2, ChamadoId = 1, UsuarioId = 1, Mensagem = "Olá Gabriel!", DataEnvio = new DateTime(2026, 10, 27, 9, 38, 54).AddTicks(3671343) }
+                new { Id = 2, ChamadoId = 1, UsuarioId = 1, Mensagem = "Olá Gabriel!", DataEnvio = new DateTime(2026, 10, 27, 9, 38, 24).AddTicks(3671343) }
             );
 
             modelBuilder.Entity<Categoria>().HasData(

@@ -126,6 +126,58 @@ function Test-DatabasePasswordFormat {
     Write-Host 'Formato PBKDF2 das senhas verificado, sem alterar usuarios.'
 }
 
+function Update-DemonstrationSeeds {
+    # Reutiliza somente o seed confiavel do export, com hash PBKDF2 ja gerado.
+    # Em base existente, o ID e automatico para nao sobrescrever outra conta.
+    $source = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'database/01_script.sql'))
+    $checks = [Text.StringBuilder]::new()
+    foreach ($account in @(
+        @{ Email = 'gestor@gmail.com'; Role = 'Gestor'; Id = 3 },
+        @{ Email = 'admin@gmail.com'; Role = 'Admin'; Id = 4 }
+    )) {
+        $pattern = "(?m)^INSERT \[dbo\]\.\[Usuarios\].*VALUES \(" + $account.Id + ", .*N'" + [regex]::Escape($account.Email) + "'.*N'" + $account.Role + "'.*$"
+        $seed = [regex]::Matches($source, $pattern)
+        if ($seed.Count -ne 1) { throw 'Seed administrativo ausente, divergente ou ambiguo.' }
+        $insert = $seed[0].Value.Replace('([Id], ', '(')
+        $insert = [regex]::Replace($insert, 'VALUES \(' + $account.Id + ', ', 'VALUES (')
+        $email = $account.Email
+        $role = $account.Role
+        [void]$checks.AppendLine(@"
+IF EXISTS (SELECT 1 FROM dbo.Usuarios WITH (UPDLOCK,HOLDLOCK)
+           WHERE Email=N'$email' AND Tipo COLLATE Latin1_General_100_BIN2<>N'$role')
+    THROW 51003, 'Email de demonstracao pertence a outro perfil; revise a conta antes de continuar.', 1;
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WITH (UPDLOCK,HOLDLOCK) WHERE Email=N'$email')
+BEGIN
+    $insert;
+END;
+"@)
+    }
+    $sql = @"
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+-- Compatibilidade apenas com os seeds conhecidos da versao anterior.
+-- Nao altera senhas e nao promove contas arbitrarias cadastradas pela API.
+UPDATE dbo.Usuarios SET Tipo=N'Gestor'
+WHERE Id=3 AND Nome=N'Luiz Silveira' AND Email=N'gestor@gmail.com' AND Tipo=N'Admin';
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WITH (UPDLOCK,HOLDLOCK) WHERE Email=N'admin@gmail.com')
+    UPDATE dbo.Usuarios SET Nome=N'Fernando Campos',Email=N'admin@gmail.com',Tipo=N'Admin'
+    WHERE Email=N'gestor@techhelp.local' AND Nome=N'Gestor de demonstração' AND Tipo=N'Gestor';
+$checks
+-- Ajuste pontual do seed antigo; nao altera outros comentarios nem cria regra nova.
+UPDATE c SET DataEnvio=CONVERT(datetime2(7),'2026-10-27T09:38:24.3671343')
+FROM dbo.Comentarios c JOIN dbo.Chamados ch ON ch.Id=c.ChamadoId
+WHERE c.Id=2 AND c.ChamadoId=1 AND c.UsuarioId=1
+  AND c.DataEnvio=CONVERT(datetime2(7),'2026-10-27T09:38:54.3671343')
+  AND ch.DataAbertura<=CONVERT(datetime2(7),'2026-10-27T09:38:24.3671343')
+  AND ch.DataFechamento>CONVERT(datetime2(7),'2026-10-27T09:38:24.3671343');
+COMMIT TRANSACTION;
+PRINT N'Luiz/Gestor e Fernando/Admin verificados; ajuste pontual do comentario verificado.';
+"@
+    $path = New-TemporarySql -Content $sql
+    Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $path)
+}
+
 try {
     $sourcePath = Join-Path $PSScriptRoot 'database/01_script.sql'
     $validationPath = Join-Path $PSScriptRoot 'database/07_validacao.sql'
@@ -166,6 +218,7 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
         if ($metadata.DatabaseState -ne 'ONLINE') { throw "Banco existente em estado $($metadata.DatabaseState). Nenhuma tentativa de recriacao sera feita." }
         Write-Host 'Banco existente: verificando inicializacao, sem repetir a carga...'
         Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
+        Update-DemonstrationSeeds
         Test-DatabasePasswordFormat
         Install-Np2Objects -Paths $objectPaths
         Write-Host 'Banco ja inicializado e validado. Carga nao repetida; formato das senhas verificado.'
@@ -227,7 +280,7 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
     $seedChecks = [Text.StringBuilder]::new()
     $seedPattern = '(?m)^INSERT (\[dbo\]\.\[[^\]]+\]) (\([^\r\n]+?\)) VALUES (\([^\r\n]+\))\s*$'
     $seeds = [regex]::Matches($source, $seedPattern)
-    if ($seeds.Count -ne 21) { throw "Quantidade inesperada de seeds no export: $($seeds.Count). Revise a adaptacao antes de executar." }
+    if ($seeds.Count -ne 22) { throw "Quantidade inesperada de seeds no export: $($seeds.Count). Revise a adaptacao antes de executar." }
     foreach ($seed in $seeds) {
         $table = $seed.Groups[1].Value
         $columns = $seed.Groups[2].Value.Trim('(', ')')
@@ -240,6 +293,7 @@ FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES;
     Write-Host 'Criando banco e carregando estrutura e seeds oficiais...'
     Write-Host (Invoke-DatabaseCommand -InputFile $temporaryPath)
     Write-Host (Invoke-DatabaseCommand -Database 'TechHelpSolutions' -InputFile $validationPath)
+    Update-DemonstrationSeeds
     Test-DatabasePasswordFormat
     Install-Np2Objects -Paths $objectPaths
     Write-Host 'Inicializacao concluida e validada com sucesso.'

@@ -20,7 +20,8 @@ namespace UsuariosApi.Migrations
                 {
                     { 1, new DateTime(2026, 10, 27, 9, 31, 35, 292, DateTimeKind.Unspecified).AddTicks(9494), "usuario@gmail.com", "João da Silva", "THS$1$PBKDF2-SHA256$600000$Qjrq0hZpiJdV2fv3hvqeTg==$XaMInIG/McJT0t3IG9BNi0mHCkBFs9CTNtlHstxjm8A=", "Usuario" },
                     { 2, new DateTime(2026, 10, 27, 9, 32, 2, 671, DateTimeKind.Unspecified).AddTicks(1620), "tecnico@gmail.com", "Gabriel Costa", "THS$1$PBKDF2-SHA256$600000$K+TsNXKCgbezgPQ3FR/BRw==$NoBvmFs8ZuGcS8QMJb7/dU+rkfrjfs+cDL+bli3HbT0=", "Tecnico" },
-                    { 3, new DateTime(2026, 10, 27, 9, 32, 31, 667, DateTimeKind.Unspecified).AddTicks(1228), "gestor@gmail.com", "Luiz Silveira", "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", "Admin" }
+                    { 3, new DateTime(2026, 10, 27, 9, 32, 31, 667, DateTimeKind.Unspecified).AddTicks(1228), "gestor@gmail.com", "Luiz Silveira", "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=", "Gestor" },
+                    { 4, new DateTime(2026, 10, 27, 9, 33, 0), "admin@gmail.com", "Fernando Campos", "THS$1$PBKDF2-SHA256$600000$NGeL5tolc85bk6iei7E0AQ==$uFqiawfFwA/6U5GPP05mqy/uSDVnNNE/vZoWyaz/tKQ=", "Admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -39,13 +40,14 @@ namespace UsuariosApi.Migrations
                 values: new object[,]
                 {
                     { 1, 1, new DateTime(2026, 10, 27, 9, 38, 19, 763, DateTimeKind.Unspecified).AddTicks(1189), "Olá João!", 2 },
-                    { 2, 1, new DateTime(2026, 10, 27, 9, 38, 54, 367, DateTimeKind.Unspecified).AddTicks(1343), "Olá Gabriel!", 1 }
+                    { 2, 1, new DateTime(2026, 10, 27, 9, 38, 24, 367, DateTimeKind.Unspecified).AddTicks(1343), "Olá Gabriel!", 1 }
                 });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(table: "Usuarios", keyColumn: "Id", keyValue: 4);
             migrationBuilder.DeleteData(
                 table: "Chamados",
                 keyColumn: "Id",

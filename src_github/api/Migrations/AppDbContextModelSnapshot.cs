@@ -193,7 +193,7 @@ namespace UsuariosApi.Migrations
                         {
                             Id = 2,
                             ChamadoId = 1,
-                            DataEnvio = new DateTime(2026, 10, 27, 9, 38, 54, 367, DateTimeKind.Unspecified).AddTicks(1343),
+                            DataEnvio = new DateTime(2026, 10, 27, 9, 38, 24, 367, DateTimeKind.Unspecified).AddTicks(1343),
                             Mensagem = "Olá Gabriel!",
                             UsuarioId = 1
                         });
@@ -324,6 +324,15 @@ namespace UsuariosApi.Migrations
                             Email = "gestor@gmail.com",
                             Nome = "Luiz Silveira",
                             Senha = "THS$1$PBKDF2-SHA256$600000$SKJi+0mHtohLEGV4cIo+tA==$OVOmmACoFV6lB4nMWxPNFsRuYtbFmeqddy+kTX0GHqA=",
+                            Tipo = "Gestor"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            DataCriacao = new DateTime(2026, 10, 27, 9, 33, 0),
+                            Email = "admin@gmail.com",
+                            Nome = "Fernando Campos",
+                            Senha = "THS$1$PBKDF2-SHA256$600000$NGeL5tolc85bk6iei7E0AQ==$uFqiawfFwA/6U5GPP05mqy/uSDVnNNE/vZoWyaz/tKQ=",
                             Tipo = "Admin"
                         });
                 });
